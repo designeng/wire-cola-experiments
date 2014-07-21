@@ -1,0 +1,36 @@
+<div class="layoutPage">
+    <h1 class="layoutPage__title">Пассажир</h1>
+
+    <div class="layoutContent__row">
+        <ul class="personInfoList">
+            <li class="personInfoList__item">
+                <p class="personInfoList__itemLabel">имя</p>
+                <p class="personInfoList__itemLabel">фамилия</p>
+                <p class="personInfoList__itemValue firstName"><%= firstName %></p>
+                <p class="personInfoList__itemValue lastName"><%= lastName %></p>
+            </li>
+            <li class="personInfoList__item">
+                <p class="personInfoList__itemLabel">дата рождения</p>
+                <p class="personInfoList__itemValue birthDate"><%= birthDate %></p>
+            </li>
+            <li class="personInfoList__item">
+                <p class="personInfoList__itemLabel">гражданство</p>
+                <p class="personInfoList__itemValue citizenship"><%= citizenship %></p>
+            </li>
+            <li class="personInfoList__item">
+                <p class="personInfoList__itemLabel">срок действия</p>
+                <p class="personInfoList__itemValue expirationDate"><%= expirationDate %></p>
+            </li>
+            <% if (typeof bonusCardNumber != "undefined") {  %>
+            <li class="personInfoList__item">
+                <p class="personInfoList__itemLabel">бонусная карта авиакомпании</p>
+                <p class="personInfoList__itemValue bonusCardNumber"><%= bonusCardNumber %></p>
+            </li>
+            <% }  %>
+            <li class="personInfoList__item">
+                <p class="personInfoList__itemLabel">номера билетов</p>
+                <p class="personInfoList__itemValue ticketNumbers"><%= ticketNumbers %></p>
+            </li>
+        </ul>
+    </div>
+</div>
