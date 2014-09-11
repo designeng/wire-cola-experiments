@@ -21,4 +21,7 @@ define
                 "underscore"    :
                     spec: "components/underscore/spec"
                     slot: {$ref: "dom.first!#page"}
+                "collectionexperiment"    :
+                    spec: "components/collectionexperiment/spec"
+                    slot: {$ref: "dom.first!#page"}
 

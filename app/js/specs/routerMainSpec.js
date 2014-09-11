@@ -26,6 +26,12 @@ define({
           slot: {
             $ref: "dom.first!#page"
           }
+        },
+        "collectionexperiment": {
+          spec: "components/collectionexperiment/spec",
+          slot: {
+            $ref: "dom.first!#page"
+          }
         }
       }
     }
