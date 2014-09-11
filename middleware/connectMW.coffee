@@ -1,4 +1,5 @@
 path = require "path"
+Chance = require "chance"
 
 ConnectMW = {}
 
@@ -31,8 +32,10 @@ ConnectMW.autocompleteService = (req, res, next) ->
         body = 
             airports: []
 
-        for port in airports
-            body.airports.push {id: id, port: port}
+        chance = new Chance()
+
+        for port in airports      
+            body.airports.push {id: id, port: port, chance: chance.word({length: 7}), location: chance.coordinates() }
             id++
 
         res.setHeader "Content-Type", "application/json; charset=utf-8"

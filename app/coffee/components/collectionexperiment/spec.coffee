@@ -5,26 +5,36 @@ define ->
         'wire/on'
         'wire/dom'
         'wire/dom/render'
+        'cola'
     ]
 
-    viewSource:
-        create:
-            module: "components/collectionexperiment/viewSource"
-            args: [
-                {$ref: 'underscoreViewTemplate'}
-                {$ref: 'underscoreModel'}
-            ]
+    townsViewTemplate:
+        module: "text!components/collectionexperiment/towns.html"
 
-    underscoreViewTemplate:
-        module: "text!components/collectionexperiment/template.html"
-
-    underscoreView:
+    townsView:
         render:
-            template: {$ref: 'viewSource'}
+            template: {$ref: 'townsViewTemplate'}
         insert:
             at: {$ref: 'slot'}
+        bind:
+            to: {$ref: 'townsCollection'}
+            bindings:
+                port: ".port"
+                chance: ".chance"
+                location: ".location"
 
-    # not a cola object
-    underscoreModel:
+    townsCollectionSource:
+        create: "components/collectionexperiment/townsCollectionSource"
+
+    identifyByPort:
         create:
-            module: 'components/collectionexperiment/modelSource'
+            module: 'cola/identifier/property'
+            args: [ 'port' ]
+
+    townsCollection:
+        create:
+            module: 'cola/Collection'
+            args: {identifier: { $ref: 'identifyByPort' }}
+
+        ready:
+            addSource: {$ref: 'townsCollectionSource'}
