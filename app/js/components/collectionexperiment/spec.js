@@ -22,7 +22,15 @@ define(function() {
         bindings: {
           port: ".port",
           chance: ".chance",
-          location: ".location"
+          location: [
+            {
+              selector: '.location',
+              handler: {
+                $ref: 'controller.locationHandler',
+                attr: "text"
+              }
+            }
+          ]
         }
       }
     },
@@ -48,6 +56,12 @@ define(function() {
         addSource: {
           $ref: 'townsCollectionSource'
         }
+      }
+    },
+    controller: {
+      create: "components/collectionexperiment/controller",
+      ready: {
+        onReady: {}
       }
     }
   };

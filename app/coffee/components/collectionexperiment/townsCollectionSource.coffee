@@ -10,7 +10,7 @@ define [
 
     client = rest.wrap(mime).chain(entity)
 
-    client({path: '/service/autocomplete'}).then(
+    client({path: '/service/aeroports'}).then(
         (response) ->
             source = new ArrayAdapter(response.airports)
             serviceDefered.resolve source

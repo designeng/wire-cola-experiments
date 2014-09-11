@@ -64,6 +64,7 @@ module.exports = (grunt) ->
                         return [
                             connectMW.stubService
                             connectMW.autocompleteService
+                            connectMW.aeroportsService
                             connectMW.namesService
                             connectMW.folderMount(connect, options.base)
                         ]

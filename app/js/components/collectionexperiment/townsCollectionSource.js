@@ -3,7 +3,7 @@ define(['cola/adapter/Array', 'rest', 'rest/interceptor/mime', 'rest/interceptor
   serviceDefered = When.defer();
   client = rest.wrap(mime).chain(entity);
   client({
-    path: '/service/autocomplete'
+    path: '/service/aeroports'
   }).then(function(response) {
     var source;
     source = new ArrayAdapter(response.airports);

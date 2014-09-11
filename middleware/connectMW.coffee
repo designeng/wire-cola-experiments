@@ -45,6 +45,25 @@ ConnectMW.autocompleteService = (req, res, next) ->
     else
         next()
 
+ConnectMW.aeroportsService = (req, res, next) ->
+    if (req.url).match new RegExp("service/aeroports")
+
+        airports = []
+        body = 
+            airports: []
+
+        chance = new Chance()
+
+        for num in [1..1000]      
+            body.airports.push {id: num, port: chance.name(), chance: chance.word({length: 7}), location: chance.coordinates() }
+
+        res.setHeader "Content-Type", "application/json; charset=utf-8"
+        res.write JSON.stringify body
+        res.end()
+
+    else
+        next()
+
 # "service/names"
 ConnectMW.namesService = (req, res, next) ->
     if (req.url).match new RegExp("service/names")

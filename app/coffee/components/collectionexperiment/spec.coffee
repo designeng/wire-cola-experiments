@@ -21,7 +21,10 @@ define ->
             bindings:
                 port: ".port"
                 chance: ".chance"
-                location: ".location"
+                # location: ".location"
+                location: [
+                    {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
+                ]
 
     townsCollectionSource:
         create: "components/collectionexperiment/townsCollectionSource"
@@ -38,3 +41,8 @@ define ->
 
         ready:
             addSource: {$ref: 'townsCollectionSource'}
+
+    controller:
+        create: "components/collectionexperiment/controller"
+        ready:
+            onReady: {}
