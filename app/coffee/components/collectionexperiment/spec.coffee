@@ -29,10 +29,9 @@ define ->
             bindings:
                 port: ".port"
                 chance: ".chance"
-                # location: ".location"
-                # location: [
-                #     {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
-                # ]
+                location: [
+                    {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
+                ]
 
     townsUnderscoreCollectionSource:
         create: "components/collectionexperiment/townsUnderscoreCollectionSource"
@@ -56,7 +55,7 @@ define ->
     # prepare template for rendering collection
     townsUnderscoreViewTemplate:
         templateSource:
-            # pattern: {$ref: 'townsUnderscoreViewHtml'}
+            # pattern: {$ref: 'townsUnderscoreViewHtml'} - can be used in model case
             rootElement: "ul"
             itemPattern: {$ref: 'townItemUnderscoreViewHtml'}
             fillWith: {$ref: 'townsUnderscoreCollectionSource'}

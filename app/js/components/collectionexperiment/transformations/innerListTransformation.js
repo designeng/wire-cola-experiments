@@ -17,7 +17,6 @@ define(["underscore"], function(_) {
   };
   return innerListTransformation = function(template) {
     return function(fieldName) {
-      console.log("innerListTransformation::::", fieldName, this[fieldName]);
       return processCollection(template, this[fieldName]);
     };
   };

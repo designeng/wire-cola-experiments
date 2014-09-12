@@ -21,5 +21,4 @@ define [
 
     innerListTransformation = (template) ->
         return (fieldName) ->
-            console.log "innerListTransformation::::", fieldName, @[fieldName]
             return processCollection template, @[fieldName]

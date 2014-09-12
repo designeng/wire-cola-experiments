@@ -36,7 +36,16 @@ define(function() {
         },
         bindings: {
           port: ".port",
-          chance: ".chance"
+          chance: ".chance",
+          location: [
+            {
+              selector: '.location',
+              handler: {
+                $ref: 'controller.locationHandler',
+                attr: "text"
+              }
+            }
+          ]
         }
       }
     },
