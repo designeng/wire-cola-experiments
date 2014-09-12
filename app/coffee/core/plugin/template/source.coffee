@@ -28,12 +28,7 @@ define [
             return list
 
         fields = _.keys itemTransformations
-
-        console.log "fields::::::", fields
-
         transformations = _.values itemTransformations
-
-        console.log "transformations::::::", transformations
 
         for item in list
             fieldCount = 0

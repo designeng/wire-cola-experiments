@@ -25,9 +25,7 @@ define(["underscore", "when"], function(_, When) {
       return list;
     }
     fields = _.keys(itemTransformations);
-    console.log("fields::::::", fields);
     transformations = _.values(itemTransformations);
-    console.log("transformations::::::", transformations);
     for (_i = 0, _len = list.length; _i < _len; _i++) {
       item = list[_i];
       fieldCount = 0;

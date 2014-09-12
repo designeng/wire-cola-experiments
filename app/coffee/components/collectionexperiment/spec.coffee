@@ -43,8 +43,15 @@ define ->
     townItemUnderscoreViewHtml:
         module: "text!components/collectionexperiment/townItem_underscore.html"
 
+    innerListItemViewHtml:
+        module: "text!components/collectionexperiment/innerList_underscore.html"
+
     innerListTransformation:
-        module: "components/collectionexperiment/transformations/innerListTransformation"
+        create:
+            module: "components/collectionexperiment/transformations/innerListTransformation"
+            args: [
+                {$ref: 'innerListItemViewHtml'}
+            ]
 
     # prepare template for rendering collection
     townsUnderscoreViewTemplate:
