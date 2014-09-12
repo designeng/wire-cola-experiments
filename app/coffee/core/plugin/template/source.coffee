@@ -3,16 +3,6 @@ define [
     "when"
 ], (_, When) ->
 
-    tagRegexp = /^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)$/
-
-    tabulationRegexp = /\t\n/g
-
-    trim = (str) -> 
-        str.replace(/^\s+|\s+$/g,'')
-
-    removeTabs = (str) ->
-        str.replace(tabulationRegexp,'')
-
     sum = (memo, text) ->
         return memo + text
 

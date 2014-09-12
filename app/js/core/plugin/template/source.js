@@ -1,13 +1,5 @@
 define(["underscore", "when"], function(_, When) {
-  var processCollection, removeTabs, sum, tabulationRegexp, tagRegexp, trim;
-  tagRegexp = /^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)$/;
-  tabulationRegexp = /\t\n/g;
-  trim = function(str) {
-    return str.replace(/^\s+|\s+$/g, '');
-  };
-  removeTabs = function(str) {
-    return str.replace(tabulationRegexp, '');
-  };
+  var processCollection, sum;
   sum = function(memo, text) {
     return memo + text;
   };
