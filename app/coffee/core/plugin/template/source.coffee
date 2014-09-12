@@ -14,6 +14,7 @@ define [
             result.push zeroPattern
         else
             for item in list
+                console.log "itemPattern:::", itemPattern
                 result.push _.template itemPattern, item
 
         result.unshift "<#{rootElement}>"
@@ -26,6 +27,8 @@ define [
     acceptTransformations = (list, itemTransformations) ->
         if _.isEmpty itemTransformations
             return list
+
+        console.log "itemTransformations::::", itemTransformations
 
         fields = _.keys itemTransformations
         transformations = _.values itemTransformations

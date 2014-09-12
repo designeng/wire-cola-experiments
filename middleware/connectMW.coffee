@@ -60,7 +60,7 @@ ConnectMW.aeroportsService = (req, res, next) ->
         for num in [1..200]
             range = randomRange(0, 10)
             innerList = []
-            for i in [0, range]
+            for i in [0..range]
                 innerList.push {id: i, name: chance.name(), hash: chance.hash({length: 7}) }
             body.airports.push {id: num, port: chance.name(), chance: chance.word({length: 7}), location: chance.coordinates(), innerList: innerList }
 

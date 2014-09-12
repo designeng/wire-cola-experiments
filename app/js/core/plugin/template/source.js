@@ -11,6 +11,7 @@ define(["underscore", "when"], function(_, When) {
     } else {
       for (_i = 0, _len = list.length; _i < _len; _i++) {
         item = list[_i];
+        console.log("itemPattern:::", itemPattern);
         result.push(_.template(itemPattern, item));
       }
     }
@@ -24,6 +25,7 @@ define(["underscore", "when"], function(_, When) {
     if (_.isEmpty(itemTransformations)) {
       return list;
     }
+    console.log("itemTransformations::::", itemTransformations);
     fields = _.keys(itemTransformations);
     transformations = _.values(itemTransformations);
     for (_i = 0, _len = list.length; _i < _len; _i++) {
