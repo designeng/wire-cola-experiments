@@ -43,24 +43,26 @@ define ->
     townItemUnderscoreViewHtml:
         module: "text!components/collectionexperiment/townItem_underscore.html"
 
+    innerListTransformation:
+        module: "components/collectionexperiment/transformations/innerListTransformation"
+
+    # prepare template for rendering collection
     townsUnderscoreViewTemplate:
         templateSource:
             # pattern: {$ref: 'townsUnderscoreViewHtml'}
             rootElement: "ul"
             itemPattern: {$ref: 'townItemUnderscoreViewHtml'}
             fillWith: {$ref: 'townsUnderscoreCollectionSource'}
-                # can be filled with model - just set the object with fields
-                # port: "testport"
-                # chance: "2"
-                # location: "3"
-
-
+            itemTransformations:
+                "innerList": {$ref: 'innerListTransformation'}
 
     townsUnderscoreView:
         render:
             template: {$ref: 'townsUnderscoreViewTemplate'}
         insert:
             at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
+        on:
+            'click:.item': 'controller.clicked'
 
     townsCollectionSource:
         create: "components/collectionexperiment/townsCollectionSource"

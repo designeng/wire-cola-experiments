@@ -13,6 +13,12 @@ define [
                 return obj instanceof HTMLElement
             catch e
                 return (typeof obj == "object") and (obj.nodeType == 1 ) and (typeof obj.style == "object") and (typeof obj.ownerDocument == "object")
+
+        clicked: (e) ->
+            data = $(e.target)
+                .closest('li')
+                .attr('data-underscore-id')
+            console.log "CLICKED:", data
             
         locationHandler: (node, data, info) ->
             # console.log "DATA:::::", node, data, info

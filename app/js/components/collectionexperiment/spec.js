@@ -49,6 +49,9 @@ define(function() {
     townItemUnderscoreViewHtml: {
       module: "text!components/collectionexperiment/townItem_underscore.html"
     },
+    innerListTransformation: {
+      module: "components/collectionexperiment/transformations/innerListTransformation"
+    },
     townsUnderscoreViewTemplate: {
       templateSource: {
         rootElement: "ul",
@@ -57,6 +60,11 @@ define(function() {
         },
         fillWith: {
           $ref: 'townsUnderscoreCollectionSource'
+        },
+        itemTransformations: {
+          "innerList": {
+            $ref: 'innerListTransformation'
+          }
         }
       }
     },
@@ -73,6 +81,9 @@ define(function() {
             $ref: 'contentView'
           }
         }
+      },
+      on: {
+        'click:.item': 'controller.clicked'
       }
     },
     townsCollectionSource: {

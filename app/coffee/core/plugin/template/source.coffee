@@ -23,6 +23,26 @@ define [
 
         return resultHtml
 
+    acceptTransformations = (list, itemTransformations) ->
+        if _.isEmpty itemTransformations
+            return list
+
+        fields = _.keys itemTransformations
+
+        console.log "fields::::::", fields
+
+        transformations = _.values itemTransformations
+
+        console.log "transformations::::::", transformations
+
+        for item in list
+            fieldCount = 0
+            for fieldName in fields
+                item[fieldName] = transformations[fieldCount].call item, fieldName
+
+        return list
+
+
     return (options) ->
 
         factories:
@@ -34,6 +54,7 @@ define [
                         itemPattern = options.itemPattern
                         rootElement = options.rootElement
                         zeroPattern = options.zeroPattern
+                        itemTransformations = options.itemTransformations
                         
                         if fillWith?
                             if fillWith instanceof Array
@@ -41,6 +62,10 @@ define [
                                     rootElement = "ul"
                                 if !itemPattern?
                                     throw new Error "itemPattern option should be defined!"
+
+                                if itemTransformations?
+                                    fillWith = acceptTransformations(fillWith, itemTransformations)
+
                                 return processCollection(rootElement, itemPattern, fillWith, zeroPattern)
                             # TODO: should be test for object (model)?
                             else

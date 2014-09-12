@@ -17,6 +17,12 @@ define(["jquery", "underscore"], function($, _) {
       }
     };
 
+    Controller.prototype.clicked = function(e) {
+      var data;
+      data = $(e.target).closest('li').attr('data-underscore-id');
+      return console.log("CLICKED:", data);
+    };
+
     Controller.prototype.locationHandler = function(node, data, info) {
       return $(node).text(data.location);
     };
