@@ -1,6 +1,18 @@
 define(function() {
   return {
-    $plugins: ['wire/debug', 'wire/on', 'wire/dom', 'wire/dom/render', 'cola'],
+    $plugins: ['wire/debug', 'wire/on', 'wire/dom', 'wire/dom/render', 'core/plugin/template/source', 'cola'],
+    contentView: {
+      render: {
+        template: {
+          module: "text!components/collectionexperiment/template.html"
+        }
+      },
+      insert: {
+        at: {
+          $ref: 'slot'
+        }
+      }
+    },
     townsViewTemplate: {
       module: "text!components/collectionexperiment/towns.html"
     },
@@ -12,7 +24,10 @@ define(function() {
       },
       insert: {
         at: {
-          $ref: 'slot'
+          $ref: 'dom.first!.left',
+          at: {
+            $ref: 'contentView'
+          }
         }
       },
       bind: {
@@ -31,6 +46,40 @@ define(function() {
               }
             }
           ]
+        }
+      }
+    },
+    townsUnderscoreCollectionSource: {
+      create: "components/collectionexperiment/townsUnderscoreCollectionSource"
+    },
+    townsUnderscoreViewHtml: {
+      module: "text!components/collectionexperiment/towns_underscore.html"
+    },
+    townItemUnderscoreViewHtml: {
+      module: "text!components/collectionexperiment/townItem_underscore.html"
+    },
+    townsUnderscoreViewTemplate: {
+      templateSource: {
+        pattern: {
+          $ref: 'townsUnderscoreViewHtml'
+        },
+        fillWith: {
+          $ref: 'townsUnderscoreCollectionSource'
+        }
+      }
+    },
+    townsUnderscoreView: {
+      render: {
+        template: {
+          $ref: 'townsUnderscoreViewTemplate'
+        }
+      },
+      insert: {
+        at: {
+          $ref: 'dom.first!.right',
+          at: {
+            $ref: 'contentView'
+          }
         }
       }
     },
