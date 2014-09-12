@@ -19,3 +19,6 @@ define [
 
             $(node).text data.location
 
+            # here subview, previously fabricated, can be attahed to wrapper.
+            # if it showld be visibly anyway, all subview templates can be underscored at the rendering:before step
+
