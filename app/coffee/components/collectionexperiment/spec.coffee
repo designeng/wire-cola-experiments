@@ -30,9 +30,9 @@ define ->
                 port: ".port"
                 chance: ".chance"
                 # location: ".location"
-                location: [
-                    {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
-                ]
+                # location: [
+                #     {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
+                # ]
 
     townsUnderscoreCollectionSource:
         create: "components/collectionexperiment/townsUnderscoreCollectionSource"
@@ -45,12 +45,15 @@ define ->
 
     townsUnderscoreViewTemplate:
         templateSource:
-            pattern: {$ref: 'townsUnderscoreViewHtml'}
+            # pattern: {$ref: 'townsUnderscoreViewHtml'}
+            rootElement: "ul"
+            itemPattern: {$ref: 'townItemUnderscoreViewHtml'}
             fillWith: {$ref: 'townsUnderscoreCollectionSource'}
                 # can be filled with model - just set the object with fields
                 # port: "testport"
                 # chance: "2"
                 # location: "3"
+
 
 
     townsUnderscoreView:

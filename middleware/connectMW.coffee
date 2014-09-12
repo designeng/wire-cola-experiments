@@ -57,7 +57,7 @@ ConnectMW.aeroportsService = (req, res, next) ->
 
         chance = new Chance()
 
-        for num in [1..100]
+        for num in [1..200]
             range = randomRange(0, 10)
             innerList = []
             for i in [0, range]

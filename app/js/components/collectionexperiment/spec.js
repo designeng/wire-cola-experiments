@@ -36,16 +36,7 @@ define(function() {
         },
         bindings: {
           port: ".port",
-          chance: ".chance",
-          location: [
-            {
-              selector: '.location',
-              handler: {
-                $ref: 'controller.locationHandler',
-                attr: "text"
-              }
-            }
-          ]
+          chance: ".chance"
         }
       }
     },
@@ -60,8 +51,9 @@ define(function() {
     },
     townsUnderscoreViewTemplate: {
       templateSource: {
-        pattern: {
-          $ref: 'townsUnderscoreViewHtml'
+        rootElement: "ul",
+        itemPattern: {
+          $ref: 'townItemUnderscoreViewHtml'
         },
         fillWith: {
           $ref: 'townsUnderscoreCollectionSource'

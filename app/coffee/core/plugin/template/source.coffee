@@ -13,23 +13,25 @@ define [
     removeTabs = (str) ->
         str.replace(tabulationRegexp,'')
 
-    processCollection = (pattern, list) ->
-        pattern = trim pattern
-        pattern = removeTabs pattern
-        console.log "PATTERN:::", pattern
+    sum = (memo, text) ->
+        return memo + text
 
-        matched = pattern.match(tagRegexp)
+    processCollection = (rootElement, itemPattern, list, zeroPattern) ->
 
-        if matched[1] == "ul"
-            # find li inside
-            matched_li = matched[3].match(tagRegexp)
-            if matched_li[1] == "li"
-                itemPattern = matched_li[0]
-                console.log "ITEM PATTERN::::", itemPattern
+        result = []
 
-        result = ""
+        if !list.length and zeroPattern?
+            result.push zeroPattern
+        else
+            for item in list
+                result.push _.template itemPattern, item
 
-        return result
+        result.unshift "<#{rootElement}>"
+        result.push "</#{rootElement}>"
+
+        resultHtml = _.reduce result, sum, ""
+
+        return resultHtml
 
     return (options) ->
 
@@ -39,16 +41,21 @@ define [
                     .then (options) ->
                         pattern = options.pattern
                         fillWith = options.fillWith
-
-                        if !pattern?
-                            throw new Error "Pattern option should be defined!"
+                        itemPattern = options.itemPattern
+                        rootElement = options.rootElement
+                        zeroPattern = options.zeroPattern
                         
                         if fillWith?
-                            if fillWith instanceof Array 
-                                return processCollection(pattern, fillWith)
-                                # return "<div>TEST</div>"
-                            # TODO: should be test for object? 
+                            if fillWith instanceof Array
+                                if !rootElement?
+                                    rootElement = "ul"
+                                if !itemPattern?
+                                    throw new Error "itemPattern option should be defined!"
+                                return processCollection(rootElement, itemPattern, fillWith, zeroPattern)
+                            # TODO: should be test for object (model)?
                             else
+                                if !pattern?
+                                    throw new Error "pattern option should be defined!"
                                 return _.template pattern, fillWith
                         else
                             return pattern
