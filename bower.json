@@ -19,6 +19,10 @@
     "hasher": "~1.2.0",
     "jasmine-jquery": "~2.0.3",
     "moment": "~2.6.0",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "handlebars": "~2.0.0"
+  },
+  "resolutions": {
+    "handlebars": "~2.0.0"
   }
 }
