@@ -42,6 +42,41 @@ define(function() {
           }
         }
       }
+    },
+    collectionSource: {
+      create: "components/handlebars/collectionSource"
+    },
+    collectionItemViewHtml: {
+      module: "hb!components/handlebars/collectionItem.html"
+    },
+    collectionInnerListPartial: {
+      module: "hb!components/handlebars/collectionInnerListPartial.html"
+    },
+    collectionViewTemplate: {
+      templateSource: {
+        rootElement: "ul",
+        itemPattern: {
+          $ref: 'collectionItemViewHtml'
+        },
+        fillWith: {
+          $ref: 'collectionSource'
+        }
+      }
+    },
+    collectionView: {
+      render: {
+        template: {
+          $ref: 'collectionViewTemplate'
+        }
+      },
+      insert: {
+        at: {
+          $ref: 'dom.first!.right',
+          at: {
+            $ref: 'contentView'
+          }
+        }
+      }
     }
   };
 });

@@ -15,8 +15,10 @@ define [
             result.push zeroPattern
         else
             for item in list
-                result.push _.template itemPattern, item
+                result.push itemPattern(item)
 
+        console.log "result:::::", result
+        
         result.unshift "<#{rootElement}>"
         result.push "</#{rootElement}>"
 
@@ -65,7 +67,7 @@ define [
                                     fillWith = acceptTransformations(fillWith, itemTransformations)
 
                                 return processCollection(rootElement, itemPattern, fillWith, zeroPattern)
-                                
+
                             # TODO: should be test for object (model)?
                             else
                                 if !pattern?

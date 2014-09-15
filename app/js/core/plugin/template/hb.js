@@ -11,9 +11,10 @@ define(["underscore", "handlebars", "when"], function(_, Handlebars, When) {
     } else {
       for (_i = 0, _len = list.length; _i < _len; _i++) {
         item = list[_i];
-        result.push(_.template(itemPattern, item));
+        result.push(itemPattern(item));
       }
     }
+    console.log("result:::::", result);
     result.unshift("<" + rootElement + ">");
     result.push("</" + rootElement + ">");
     resultHtml = _.reduce(result, sum, "");

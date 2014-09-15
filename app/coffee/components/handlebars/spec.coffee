@@ -15,22 +15,18 @@ define ->
         insert:
             at: {$ref: 'slot'}
 
+    # ------------------------ single model rendering ---------------------------
     townsViewHtml:
         module: "hb!components/handlebars/towns.html"
 
     townsViewTemplate:
         templateSource:
-            # compiled function in handlebars case:
+            # pattern is the reference to compiled function in handlebars case:
             pattern: {$ref: 'townsViewHtml'}
-            # rootElement: "ul"
-            # itemPattern: {$ref: 'townItemUnderscoreViewHtml'}
             fillWith:
                 port: "Model"
                 chance: "only"
                 location: "rendered"
-
-            # itemTransformations:
-            #     "innerList": {$ref: 'innerListTransformation'}
 
     townsView:
         render:
@@ -38,5 +34,26 @@ define ->
         insert:
             at: {$ref: 'dom.first!.left', at: {$ref: 'contentView'}}
 
-    # collectionViewHtml:
-    #     module: "hb!components/handlebars/towns.html"
+    # ------------------------ collection rendering ---------------------------
+    collectionSource:
+        create: "components/handlebars/collectionSource"
+
+    collectionItemViewHtml:
+        module: "hb!components/handlebars/collectionItem.html"
+
+    collectionInnerListPartial:
+        module: "hb!components/handlebars/collectionInnerListPartial.html"
+
+    collectionViewTemplate:
+        templateSource:
+            rootElement: "ul"
+            itemPattern: {$ref: 'collectionItemViewHtml'}
+            fillWith: {$ref: 'collectionSource'}
+            # itemTransformations:
+            #     "innerList": {$ref: 'innerListTransformation'}
+
+    collectionView:
+        render:
+            template: {$ref: 'collectionViewTemplate'}
+        insert:
+            at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
