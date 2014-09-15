@@ -20,9 +20,6 @@ module.exports = (grunt) ->
                 files: ["app/js/**/**.js", "test/jasmine/js/**/**.js"]
                 options:
                     livereload: true
-            handlebars:
-                files: ["app/js/**/**.js"]
-                tasks: ["handlebars-compile-template"]
 
         coffee:
             app:
@@ -45,16 +42,6 @@ module.exports = (grunt) ->
                     cwd: 'test/jasmine/coffee'
                     src: ['**/*.coffee']
                     dest: 'test/jasmine/js'
-                    ext: '.js'
-                ]
-
-        handlebars:
-            tpl:
-                files: [
-                    expand: true
-                    cwd: 'app/js'
-                    src: ['**/*.html']
-                    dest: 'app/js'
                     ext: '.js'
                 ]
 
@@ -96,7 +83,6 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks "grunt-contrib-copy"
     grunt.loadNpmTasks "grunt-contrib-connect"
     grunt.loadNpmTasks "grunt-contrib-concat"
-    grunt.loadNpmTasks "grunt-contrib-handlebars"
     grunt.loadNpmTasks "grunt-newer"
 
     grunt.registerTask "default", ["connect:server", "watch"]
@@ -104,7 +90,6 @@ module.exports = (grunt) ->
     # compilation
     grunt.registerTask "coffee-compile-app", ["newer:coffee:app"]
     grunt.registerTask "coffee-compile-jasmine", ["newer:coffee:jasmine"]
-    grunt.registerTask "handlebars-compile-template", ["newer:handlebars:tpl"]
 
     grunt.registerTask "server", ["connect"]
 
