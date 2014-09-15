@@ -24,4 +24,7 @@ define
                 "collectionexperiment"    :
                     spec: "components/collectionexperiment/spec"
                     slot: {$ref: "dom.first!#page"}
+                "handlebars"    :
+                    spec: "components/handlebars/spec"
+                    slot: {$ref: "dom.first!#page"}
 
