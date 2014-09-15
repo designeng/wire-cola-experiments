@@ -30,6 +30,16 @@ require.config
             location: "../../bower_components/rest"
         },
         {
+            name: "handlebars"
+            main: "./handlebars"
+            location: "../../node_modules/handlebars/dist/amd"
+        },
+        {
+            name: "hb"
+            main: "hb"
+            location: "../../bower_components/requirejs-handlebars"
+        },
+        {
             name: "crossroads"
             main: "crossroads"
             location: "../../bower_components/crossroads/dist"
