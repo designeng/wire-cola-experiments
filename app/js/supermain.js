@@ -85,6 +85,7 @@ require.config({
     }
   },
   paths: {
+    "handlebars.runtime": "../../node_modules/handlebars/dist/handlebars.runtime.amd",
     "bootstrapSpec": "specs/bootstrapSpec",
     "routerMainSpec": "specs/routerMainSpec"
   },

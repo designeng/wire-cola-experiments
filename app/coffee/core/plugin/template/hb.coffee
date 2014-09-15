@@ -1,8 +1,8 @@
 define [
     "underscore"
-    "handlebars"
     "when"
-], (_, Handlebars, When) ->
+    "handlebars"
+], (_, When, Handlebars) ->
 
     sum = (memo, text) ->
         return memo + text
@@ -17,14 +17,22 @@ define [
             for item in list
                 result.push itemPattern(item)
 
-        console.log "result:::::", result
-        
         result.unshift "<#{rootElement}>"
         result.push "</#{rootElement}>"
 
         resultHtml = _.reduce result, sum, ""
 
         return resultHtml
+
+    registerPartials = (partials) ->
+
+        for partial of partials
+
+            # error - undefined not a function
+            Handlebars.registerHelper 'partial', (templateName, context) ->
+                return new Handlebars.SafeString(Handlebars.templates[templateName](this))
+
+        return
 
     acceptTransformations = (list, itemTransformations) ->
         if _.isEmpty itemTransformations
@@ -52,6 +60,7 @@ define [
                         pattern = options.pattern
                         fillWith = options.fillWith
                         itemPattern = options.itemPattern
+                        partials = options.partials
                         rootElement = options.rootElement
                         zeroPattern = options.zeroPattern
                         itemTransformations = options.itemTransformations
@@ -62,6 +71,8 @@ define [
                                     rootElement = "ul"
                                 if !itemPattern?
                                     throw new Error "itemPattern option should be defined!"
+                                if partials?
+                                    registerPartials partials
 
                                 if itemTransformations?
                                     fillWith = acceptTransformations(fillWith, itemTransformations)

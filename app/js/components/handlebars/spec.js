@@ -60,6 +60,11 @@ define(function() {
         },
         fillWith: {
           $ref: 'collectionSource'
+        },
+        partials: {
+          "innerListHelper": {
+            $ref: 'collectionInnerListPartial'
+          }
         }
       }
     },

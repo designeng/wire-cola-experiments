@@ -49,6 +49,9 @@ define ->
             rootElement: "ul"
             itemPattern: {$ref: 'collectionItemViewHtml'}
             fillWith: {$ref: 'collectionSource'}
+            partials:
+                "innerListHelper": {$ref: 'collectionInnerListPartial'}
+
             # itemTransformations:
             #     "innerList": {$ref: 'innerListTransformation'}
 

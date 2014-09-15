@@ -107,6 +107,7 @@ require.config
             deps: ["underscore"]
 
     paths:
+        "handlebars.runtime": "../../node_modules/handlebars/dist/handlebars.runtime.amd"
 
         # specs
         "bootstrapSpec": "specs/bootstrapSpec"

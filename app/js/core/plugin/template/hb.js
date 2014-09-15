@@ -1,5 +1,5 @@
-define(["underscore", "handlebars", "when"], function(_, Handlebars, When) {
-  var acceptTransformations, processCollection, sum;
+define(["underscore", "when", "handlebars"], function(_, When, Handlebars) {
+  var acceptTransformations, processCollection, registerPartials, sum;
   sum = function(memo, text) {
     return memo + text;
   };
@@ -14,11 +14,18 @@ define(["underscore", "handlebars", "when"], function(_, Handlebars, When) {
         result.push(itemPattern(item));
       }
     }
-    console.log("result:::::", result);
     result.unshift("<" + rootElement + ">");
     result.push("</" + rootElement + ">");
     resultHtml = _.reduce(result, sum, "");
     return resultHtml;
+  };
+  registerPartials = function(partials) {
+    var partial;
+    for (partial in partials) {
+      Handlebars.registerHelper('partial', function(templateName, context) {
+        return new Handlebars.SafeString(Handlebars.templates[templateName](this));
+      });
+    }
   };
   acceptTransformations = function(list, itemTransformations) {
     var fieldCount, fieldName, fields, item, transformations, _i, _j, _len, _len1;
@@ -43,10 +50,11 @@ define(["underscore", "handlebars", "when"], function(_, Handlebars, When) {
       factories: {
         templateSource: function(resolver, componentDef, wire) {
           return wire(componentDef.options).then(function(options) {
-            var fillWith, itemPattern, itemTransformations, pattern, rootElement, zeroPattern;
+            var fillWith, itemPattern, itemTransformations, partials, pattern, rootElement, zeroPattern;
             pattern = options.pattern;
             fillWith = options.fillWith;
             itemPattern = options.itemPattern;
+            partials = options.partials;
             rootElement = options.rootElement;
             zeroPattern = options.zeroPattern;
             itemTransformations = options.itemTransformations;
@@ -57,6 +65,9 @@ define(["underscore", "handlebars", "when"], function(_, Handlebars, When) {
                 }
                 if (itemPattern == null) {
                   throw new Error("itemPattern option should be defined!");
+                }
+                if (partials != null) {
+                  registerPartials(partials);
                 }
                 if (itemTransformations != null) {
                   fillWith = acceptTransformations(fillWith, itemTransformations);
