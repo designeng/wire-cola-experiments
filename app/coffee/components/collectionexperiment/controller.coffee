@@ -29,3 +29,14 @@ define [
             # here subview, previously fabricated, can be attahed to wrapper.
             # if it showld be visibly anyway, all subview templates can be underscored at the rendering:before step
 
+        eachHandler: (node, data, info) ->
+            console.log node
+            # node.textContent("----")
+            # $(node).text "----"
+
+        allHandler: (node, data, info) ->
+            # $(node).text "123"
+
+        liClicked: (e) ->
+            console.log "CLICKED:::::", e
+

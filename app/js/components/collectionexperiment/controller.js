@@ -27,6 +27,16 @@ define(["jquery", "underscore"], function($, _) {
       return $(node).text(data.location);
     };
 
+    Controller.prototype.eachHandler = function(node, data, info) {
+      return console.log(node);
+    };
+
+    Controller.prototype.allHandler = function(node, data, info) {};
+
+    Controller.prototype.liClicked = function(e) {
+      return console.log("CLICKED:::::", e);
+    };
+
     return Controller;
 
   })();

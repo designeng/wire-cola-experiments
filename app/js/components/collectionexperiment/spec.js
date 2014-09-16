@@ -37,12 +37,10 @@ define(function() {
         bindings: {
           port: ".port",
           chance: ".chance",
-          location: [
+          test: [
             {
-              selector: '.location',
               handler: {
-                $ref: 'controller.locationHandler',
-                attr: "text"
+                $ref: 'controller.allHandler'
               }
             }
           ]
@@ -69,40 +67,6 @@ define(function() {
             $ref: 'innerListItemViewHtml'
           }
         ]
-      }
-    },
-    townsUnderscoreViewTemplate: {
-      templateSource: {
-        rootElement: "ul",
-        itemPattern: {
-          $ref: 'townItemUnderscoreViewHtml'
-        },
-        fillWith: {
-          $ref: 'townsUnderscoreCollectionSource'
-        },
-        itemTransformations: {
-          "innerList": {
-            $ref: 'innerListTransformation'
-          }
-        }
-      }
-    },
-    townsUnderscoreView: {
-      render: {
-        template: {
-          $ref: 'townsUnderscoreViewTemplate'
-        }
-      },
-      insert: {
-        at: {
-          $ref: 'dom.first!.right',
-          at: {
-            $ref: 'contentView'
-          }
-        }
-      },
-      on: {
-        'click:.item': 'controller.clicked'
       }
     },
     townsCollectionSource: {

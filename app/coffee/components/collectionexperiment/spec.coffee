@@ -29,8 +29,11 @@ define ->
             bindings:
                 port: ".port"
                 chance: ".chance"
-                location: [
-                    {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
+                # location: [
+                #     {selector: '.location', handler: { $ref: 'controller.locationHandler', attr: "text" }}
+                # ]
+                test: [
+                    {handler: { $ref: 'controller.allHandler'}}
                 ]
 
     townsUnderscoreCollectionSource:
@@ -53,22 +56,22 @@ define ->
             ]
 
     # prepare template for rendering collection
-    townsUnderscoreViewTemplate:
-        templateSource:
-            # pattern: {$ref: 'townsUnderscoreViewHtml'} - can be used in model case
-            rootElement: "ul"
-            itemPattern: {$ref: 'townItemUnderscoreViewHtml'}
-            fillWith: {$ref: 'townsUnderscoreCollectionSource'}
-            itemTransformations:
-                "innerList": {$ref: 'innerListTransformation'}
+    # townsUnderscoreViewTemplate:
+    #     templateSource:
+    #         # pattern: {$ref: 'townsUnderscoreViewHtml'} - can be used in model case
+    #         rootElement: "ul"
+    #         itemPattern: {$ref: 'townItemUnderscoreViewHtml'}
+    #         fillWith: {$ref: 'townsUnderscoreCollectionSource'}
+    #         itemTransformations:
+    #             "innerList": {$ref: 'innerListTransformation'}
 
-    townsUnderscoreView:
-        render:
-            template: {$ref: 'townsUnderscoreViewTemplate'}
-        insert:
-            at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
-        on:
-            'click:.item': 'controller.clicked'
+    # townsUnderscoreView:
+    #     render:
+    #         template: {$ref: 'townsUnderscoreViewTemplate'}
+    #     insert:
+    #         at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
+    #     on:
+    #         'click:.item': 'controller.clicked'
 
     townsCollectionSource:
         create: "components/collectionexperiment/townsCollectionSource"
