@@ -14,8 +14,10 @@ define(["underscore", "when", "handlebars"], function(_, When, Handlebars) {
         result.push(itemPattern(item));
       }
     }
-    result.unshift("<" + rootElement + ">");
-    result.push("</" + rootElement + ">");
+    if ((rootElement != null) || rootElement === !"none") {
+      result.unshift("<" + rootElement + ">");
+      result.push("</" + rootElement + ">");
+    }
     resultHtml = _.reduce(result, sum, "");
     return resultHtml;
   };

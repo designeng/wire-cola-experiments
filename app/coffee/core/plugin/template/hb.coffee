@@ -17,8 +17,10 @@ define [
             for item in list
                 result.push itemPattern(item)
 
-        result.unshift "<#{rootElement}>"
-        result.push "</#{rootElement}>"
+        # rootElement value can be null or "none" if we want avoid it
+        if rootElement? or rootElement is not "none"
+            result.unshift "<#{rootElement}>"
+            result.push "</#{rootElement}>"
 
         resultHtml = _.reduce result, sum, ""
 
