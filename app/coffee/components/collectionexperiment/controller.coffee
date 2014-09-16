@@ -40,3 +40,6 @@ define [
         liClicked: (e) ->
             console.log "CLICKED:::::", e
 
+        onClickLi: (e) ->
+            console.log "CLICKED ITEM:::::", e
+

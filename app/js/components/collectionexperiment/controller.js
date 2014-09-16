@@ -37,6 +37,10 @@ define(["jquery", "underscore"], function($, _) {
       return console.log("CLICKED:::::", e);
     };
 
+    Controller.prototype.onClickLi = function(e) {
+      return console.log("CLICKED ITEM:::::", e);
+    };
+
     return Controller;
 
   })();

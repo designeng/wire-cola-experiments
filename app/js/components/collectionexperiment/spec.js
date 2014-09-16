@@ -16,6 +16,9 @@ define(function() {
     townsViewTemplate: {
       module: "text!components/collectionexperiment/towns.html"
     },
+    customNodeItemAdapter: {
+      module: "components/collectionexperiment/customNodeItemAdapter"
+    },
     townsView: {
       render: {
         template: {
@@ -44,7 +47,13 @@ define(function() {
               }
             }
           ]
+        },
+        customAdapter: {
+          $ref: 'customNodeItemAdapter'
         }
+      },
+      on: {
+        "click:li": "controller.onClickLi"
       }
     },
     townsUnderscoreCollectionSource: {

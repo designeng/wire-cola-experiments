@@ -19,6 +19,9 @@ define ->
     townsViewTemplate:
         module: "text!components/collectionexperiment/towns.html"
 
+    customNodeItemAdapter:
+        module: "components/collectionexperiment/customNodeItemAdapter"
+
     townsView:
         render:
             template: {$ref: 'townsViewTemplate'}
@@ -35,6 +38,9 @@ define ->
                 test: [
                     {handler: { $ref: 'controller.allHandler'}}
                 ]
+            customAdapter: {$ref: 'customNodeItemAdapter'}
+        on:
+            "click:li": "controller.onClickLi"
 
     townsUnderscoreCollectionSource:
         create: "components/collectionexperiment/townsUnderscoreCollectionSource"
