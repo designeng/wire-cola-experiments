@@ -27,18 +27,15 @@ define [
     registerPartials = (partials) ->
 
         for partial of partials
-
-            # error - undefined not a function
-            Handlebars.registerHelper 'partial', (templateName, context) ->
-                return new Handlebars.SafeString(Handlebars.templates[templateName](this))
+            # Handlebars.registerPartial 'partial', (templateName, context) ->
+            #     return new Handlebars.SafeString(Handlebars.templates[templateName](this))
+            Handlebars.registerPartial partial, partials[partial]
 
         return
 
     acceptTransformations = (list, itemTransformations) ->
         if _.isEmpty itemTransformations
             return list
-
-        console.log "itemTransformations::::", itemTransformations
 
         fields = _.keys itemTransformations
         transformations = _.values itemTransformations

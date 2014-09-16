@@ -1,5 +1,9 @@
 require.config({
   baseUrl: "/app/js",
+  paths: {
+    "bootstrapSpec": "specs/bootstrapSpec",
+    "routerMainSpec": "specs/routerMainSpec"
+  },
   packages: [
     {
       name: "wire",
@@ -23,12 +27,12 @@ require.config({
       location: "../../bower_components/rest"
     }, {
       name: "handlebars",
-      main: "./handlebars",
-      location: "../../node_modules/handlebars/dist/amd"
+      main: "handlebars-v2.0.0",
+      location: "../../bower_components/oldHandlebars"
     }, {
-      name: "hb",
-      main: "hb",
-      location: "../../bower_components/requirejs-handlebars"
+      name: "hbs",
+      main: "hbs",
+      location: "../../bower_components/requirejs-hbs"
     }, {
       name: "crossroads",
       main: "crossroads",
@@ -82,12 +86,17 @@ require.config({
   shim: {
     "underscore.string": {
       deps: ["underscore"]
+    },
+    "handlebars": {
+      exports: "Handlebars"
+    },
+    hbs: {
+      deps: ['handlebars'],
+      exports: 'hbs'
     }
   },
-  paths: {
-    "handlebars.runtime": "../../node_modules/handlebars/dist/handlebars.runtime.amd",
-    "bootstrapSpec": "specs/bootstrapSpec",
-    "routerMainSpec": "specs/routerMainSpec"
-  },
-  locale: "ru"
+  locale: "ru",
+  hbs: {
+    templateExtension: ".html"
+  }
 });

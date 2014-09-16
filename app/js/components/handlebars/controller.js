@@ -3,9 +3,7 @@ define(["jquery", "underscore"], function($, _) {
   return Controller = (function() {
     function Controller() {}
 
-    Controller.prototype.onReady = function() {
-      return console.log("townsViewTemplate::::", this.townsViewTemplate);
-    };
+    Controller.prototype.onReady = function() {};
 
     return Controller;
 

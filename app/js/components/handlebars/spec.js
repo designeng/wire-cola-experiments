@@ -14,7 +14,7 @@ define(function() {
       }
     },
     townsViewHtml: {
-      module: "hb!components/handlebars/towns.html"
+      module: "hbs!components/handlebars/towns.html"
     },
     townsViewTemplate: {
       templateSource: {
@@ -47,10 +47,13 @@ define(function() {
       create: "components/handlebars/collectionSource"
     },
     collectionItemViewHtml: {
-      module: "hb!components/handlebars/collectionItem.html"
+      module: "hbs!components/handlebars/collectionItem.html"
     },
     collectionInnerListPartial: {
-      module: "hb!components/handlebars/collectionInnerListPartial.html"
+      module: "hbs!components/handlebars/collectionInnerListPartial.html"
+    },
+    innerListTransformation: {
+      create: "components/handlebars/transformations/innerListTransformation"
     },
     collectionViewTemplate: {
       templateSource: {
@@ -62,8 +65,13 @@ define(function() {
           $ref: 'collectionSource'
         },
         partials: {
-          "innerListHelper": {
+          "innerListPartial": {
             $ref: 'collectionInnerListPartial'
+          }
+        },
+        itemTransformations: {
+          "innerList": {
+            $ref: 'innerListTransformation'
           }
         }
       }
@@ -81,6 +89,12 @@ define(function() {
             $ref: 'contentView'
           }
         }
+      }
+    },
+    controller: {
+      create: "components/handlebars/controller",
+      ready: {
+        onReady: {}
       }
     }
   };

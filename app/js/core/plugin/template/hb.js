@@ -22,9 +22,7 @@ define(["underscore", "when", "handlebars"], function(_, When, Handlebars) {
   registerPartials = function(partials) {
     var partial;
     for (partial in partials) {
-      Handlebars.registerHelper('partial', function(templateName, context) {
-        return new Handlebars.SafeString(Handlebars.templates[templateName](this));
-      });
+      Handlebars.registerPartial(partial, partials[partial]);
     }
   };
   acceptTransformations = function(list, itemTransformations) {
@@ -32,7 +30,6 @@ define(["underscore", "when", "handlebars"], function(_, When, Handlebars) {
     if (_.isEmpty(itemTransformations)) {
       return list;
     }
-    console.log("itemTransformations::::", itemTransformations);
     fields = _.keys(itemTransformations);
     transformations = _.values(itemTransformations);
     for (_i = 0, _len = list.length; _i < _len; _i++) {

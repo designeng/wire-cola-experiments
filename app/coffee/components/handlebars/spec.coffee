@@ -17,7 +17,7 @@ define ->
 
     # ------------------------ single model rendering ---------------------------
     townsViewHtml:
-        module: "hb!components/handlebars/towns.html"
+        module: "hbs!components/handlebars/towns.html"
 
     townsViewTemplate:
         templateSource:
@@ -39,24 +39,33 @@ define ->
         create: "components/handlebars/collectionSource"
 
     collectionItemViewHtml:
-        module: "hb!components/handlebars/collectionItem.html"
+        module: "hbs!components/handlebars/collectionItem.html"
 
     collectionInnerListPartial:
-        module: "hb!components/handlebars/collectionInnerListPartial.html"
+        module: "hbs!components/handlebars/collectionInnerListPartial.html"
+
+    innerListTransformation:
+        create: "components/handlebars/transformations/innerListTransformation"
 
     collectionViewTemplate:
         templateSource:
             rootElement: "ul"
             itemPattern: {$ref: 'collectionItemViewHtml'}
             fillWith: {$ref: 'collectionSource'}
-            partials:
-                "innerListHelper": {$ref: 'collectionInnerListPartial'}
 
-            # itemTransformations:
-            #     "innerList": {$ref: 'innerListTransformation'}
+            partials:
+                "innerListPartial": {$ref: 'collectionInnerListPartial'}
+
+            itemTransformations:
+                "innerList": {$ref: 'innerListTransformation'}
 
     collectionView:
         render:
             template: {$ref: 'collectionViewTemplate'}
         insert:
             at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
+
+    controller:
+        create: "components/handlebars/controller"
+        ready:
+            onReady: {}

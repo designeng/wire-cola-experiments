@@ -2,6 +2,13 @@ require.config
 
     baseUrl: "/app/js"
 
+    paths:
+        # "handlebars.runtime": "../../node_modules/handlebars/dist/handlebars.runtime.amd"
+
+        # specs
+        "bootstrapSpec": "specs/bootstrapSpec"
+        "routerMainSpec": "specs/routerMainSpec"
+
     packages: [
         # lib packages
         {
@@ -29,15 +36,33 @@ require.config
             main: "rest"
             location: "../../bower_components/rest"
         },
+
+        # {
+        #     name: "handlebars"
+        #     main: "./handlebars"
+        #     location: "../../node_modules/handlebars/dist/amd"
+        # },
+
         {
             name: "handlebars"
-            main: "./handlebars"
-            location: "../../node_modules/handlebars/dist/amd"
+            main: "handlebars-v2.0.0"
+            location: "../../bower_components/oldHandlebars"
         },
+
+        # {
+        #     name: "handlebars"
+        #     main: "handlebars.amd"
+        #     location: "../../bower_components/handlebars"
+        # },
+        # {
+        #     name: "hb"
+        #     main: "hb"
+        #     location: "../../bower_components/requirejs-handlebars"
+        # },
         {
-            name: "hb"
-            main: "hb"
-            location: "../../bower_components/requirejs-handlebars"
+            name: "hbs"
+            main: "hbs"
+            location: "../../bower_components/requirejs-hbs"
         },
         {
             name: "crossroads"
@@ -105,12 +130,12 @@ require.config
     shim:
         "underscore.string":
             deps: ["underscore"]
-
-    paths:
-        "handlebars.runtime": "../../node_modules/handlebars/dist/handlebars.runtime.amd"
-
-        # specs
-        "bootstrapSpec": "specs/bootstrapSpec"
-        "routerMainSpec": "specs/routerMainSpec"
+        "handlebars":
+            exports: "Handlebars"
+        hbs:
+            deps: ['handlebars']
+            exports: 'hbs'
 
     locale: "ru"
+    hbs:
+        templateExtension: ".html"

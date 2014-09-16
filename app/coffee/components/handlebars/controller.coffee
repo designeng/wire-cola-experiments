@@ -6,4 +6,4 @@ define [
     class Controller
 
         onReady: ->
-            console.log "townsViewTemplate::::", @townsViewTemplate
+            # console.log "townsViewTemplate::::", @townsViewTemplate
