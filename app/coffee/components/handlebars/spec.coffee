@@ -65,8 +65,14 @@ define ->
             template: {$ref: 'collectionViewTemplate'}
         insert:
             at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
+        on:
+            "click:li": "controller.onClick"
+            "click:li.inner": "controller.onClickInner"
 
-    # controller:
-    #     create: "components/handlebars/controller"
-    #     ready:
-    #         onReady: {}
+    # just for outer functions work demonstration
+    controller:
+        create: "components/handlebars/controller"
+        properties:
+            collectionView: {$ref: 'collectionView'}
+        ready:
+            onReady: {}

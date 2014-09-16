@@ -18,6 +18,7 @@ define [
             data = $(e.target)
                 .closest('li')
                 .attr('data-underscore-id')
+                
             console.log "CLICKED:", data
             
         locationHandler: (node, data, info) ->

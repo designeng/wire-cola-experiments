@@ -89,6 +89,21 @@ define(function() {
             $ref: 'contentView'
           }
         }
+      },
+      on: {
+        "click:li": "controller.onClick",
+        "click:li.inner": "controller.onClickInner"
+      }
+    },
+    controller: {
+      create: "components/handlebars/controller",
+      properties: {
+        collectionView: {
+          $ref: 'collectionView'
+        }
+      },
+      ready: {
+        onReady: {}
       }
     }
   };
