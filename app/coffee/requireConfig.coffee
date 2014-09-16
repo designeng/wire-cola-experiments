@@ -130,11 +130,6 @@ require.config
     shim:
         "underscore.string":
             deps: ["underscore"]
-        "handlebars":
-            exports: "Handlebars"
-        hbs:
-            deps: ['handlebars']
-            exports: 'hbs'
 
     locale: "ru"
     hbs:

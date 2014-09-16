@@ -65,7 +65,7 @@ define ->
         insert:
             at: {$ref: 'dom.first!.right', at: {$ref: 'contentView'}}
 
-    controller:
-        create: "components/handlebars/controller"
-        ready:
-            onReady: {}
+    # controller:
+    #     create: "components/handlebars/controller"
+    #     ready:
+    #         onReady: {}

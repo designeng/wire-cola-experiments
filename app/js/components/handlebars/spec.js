@@ -90,12 +90,6 @@ define(function() {
           }
         }
       }
-    },
-    controller: {
-      create: "components/handlebars/controller",
-      ready: {
-        onReady: {}
-      }
     }
   };
 });

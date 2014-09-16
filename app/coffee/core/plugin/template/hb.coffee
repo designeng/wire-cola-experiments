@@ -29,8 +29,6 @@ define [
     registerPartials = (partials) ->
 
         for partial of partials
-            # Handlebars.registerPartial 'partial', (templateName, context) ->
-            #     return new Handlebars.SafeString(Handlebars.templates[templateName](this))
             Handlebars.registerPartial partial, partials[partial]
 
         return
