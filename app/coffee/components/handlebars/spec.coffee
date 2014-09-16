@@ -44,6 +44,7 @@ define ->
     collectionInnerListPartial:
         module: "hbs!components/handlebars/collectionInnerListPartial.html"
 
+    # transformation on list - just to show principle
     innerListTransformation:
         create: "components/handlebars/transformations/innerListTransformation"
 
