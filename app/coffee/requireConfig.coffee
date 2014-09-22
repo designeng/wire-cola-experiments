@@ -45,8 +45,8 @@ require.config
 
         {
             name: "handlebars"
-            main: "handlebars-v2.0.0"
-            location: "../../bower_components/oldHandlebars"
+            main: "handlebars"
+            location: "../../bower_components/handlebars"
         },
 
         # {

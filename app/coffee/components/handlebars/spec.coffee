@@ -17,7 +17,7 @@ define ->
 
     # ------------------------ single model rendering ---------------------------
     townsViewHtml:
-        module: "hbs!components/handlebars/towns.html"
+        module: "hbs!components/handlebars/towns"
 
     townsViewTemplate:
         templateSource:
@@ -39,10 +39,10 @@ define ->
         create: "components/handlebars/collectionSource"
 
     collectionItemViewHtml:
-        module: "hbs!components/handlebars/collectionItem.html"
+        module: "hbs!components/handlebars/collectionItem"
 
     collectionInnerListPartial:
-        module: "hbs!components/handlebars/collectionInnerListPartial.html"
+        module: "hbs!components/handlebars/collectionInnerListPartial"
 
     # transformation on list - just to show principle
     innerListTransformation:

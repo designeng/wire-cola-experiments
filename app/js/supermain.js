@@ -27,8 +27,8 @@ require.config({
       location: "../../bower_components/rest"
     }, {
       name: "handlebars",
-      main: "handlebars-v2.0.0",
-      location: "../../bower_components/oldHandlebars"
+      main: "handlebars",
+      location: "../../bower_components/handlebars"
     }, {
       name: "hbs",
       main: "hbs",
