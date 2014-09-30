@@ -5,7 +5,7 @@ define(["underscore"], function(_) {
 
     FormController.prototype.onReady = function() {};
 
-    FormController.prototype.firstNameBehaviourHandler = function() {};
+    FormController.prototype.formValidationBehaviourHandler = function(target, errors) {};
 
     return FormController;
 

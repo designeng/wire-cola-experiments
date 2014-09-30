@@ -38,20 +38,22 @@ define({
       }
     },
     validate: {
-      firstName: {
-        "not longer than 20 characters": {
-          rule: function(value) {
-            if (value.length > 20) {
-              return false;
-            } else {
-              return true;
-            }
-          },
-          message: "Should not be longer than 20 characters",
-          behaviour: {
-            $ref: "formController.firstNameBehaviourHandler"
+      fields: {
+        firstName: {
+          "not longer than 20 characters": {
+            rule: function(value) {
+              if (value.length > 20) {
+                return false;
+              } else {
+                return true;
+              }
+            },
+            message: "Should not be longer than 20 characters"
           }
         }
+      },
+      behaviour: {
+        $ref: "formController.formValidationBehaviourHandler"
       }
     }
   }

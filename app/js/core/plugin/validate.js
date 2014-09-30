@@ -4,7 +4,7 @@ define(["underscore", "jquery"], function(_, $) {
     validateFacet = function(resolver, facet, wire) {
       var name, strategies, strategy, strategyName, target, value, _ref;
       target = facet.target;
-      _ref = facet.options;
+      _ref = facet.options.fields;
       for (name in _ref) {
         strategies = _ref[name];
         value = target.elements[name].value;

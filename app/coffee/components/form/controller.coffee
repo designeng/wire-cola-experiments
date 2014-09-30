@@ -6,4 +6,4 @@ define [
 
         onReady: ->
 
-        firstNameBehaviourHandler: ->
+        formValidationBehaviourHandler: (target, errors) ->

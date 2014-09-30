@@ -9,7 +9,7 @@ define [
             target = facet.target
 
             # form can have more then one element
-            for name, strategies of facet.options
+            for name, strategies of facet.options.fields
                 # get the element value
                 value = target.elements[name].value
                 # can be more then one strategy
