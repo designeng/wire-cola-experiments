@@ -38,6 +38,12 @@ define({
           slot: {
             $ref: "dom.first!#page"
           }
+        },
+        "form": {
+          spec: "components/form/spec",
+          slot: {
+            $ref: "dom.first!#page"
+          }
         }
       }
     }
