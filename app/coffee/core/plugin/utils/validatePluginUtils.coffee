@@ -14,9 +14,16 @@ define [
             if _.isFunction rule
                 return rule
             else if _.isRegExp rule
-                return ruleFunction = () ->
-                    value = Array::slice.call(arguments, 0, 1)
-                    return value.match rule
+                return ruleFunction = (value) ->
+                    # try
+                    #     return value.match rule
+                    # catch e
+                    #     return false
+                    
+                    if value
+                        return String::match.call value, rule
+                    else
+                        return false
 
         # @returns {Array}
         extractStrategies: (options) ->
@@ -28,7 +35,7 @@ define [
         normalizeStrategyItem: (item) ->
             func = @normalizeRule(item.rule)
             console.log "func:::::::", func
-            # item.rule = @toPromise(func, item.message)
+            item.rule = @toPromise(func, item.message)
             return item
 
         normalizeArray: (array) ->

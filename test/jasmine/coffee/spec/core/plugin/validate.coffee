@@ -4,15 +4,10 @@ define [
     "core/plugin/utils/validatePluginUtils"
 ], (wire, ValidatePluginUtils) ->
 
-    
-
-    # controller
-    # sendRequestSpy = jasmine.createSpy('sendRequest')
-
     define 'formController', () ->
         class FormController
 
-            firstNameRule: ->
+            firstNameRule: (value) ->
                 return true
 
             behaviorHandler: ->
@@ -25,16 +20,16 @@ define [
         ]
 
         options:
-            literal:
-                fields:
-                    firstName:
-                        "not longer than 20 characters":
-                            rule: {$ref: 'formController.firstNameRule'}
-                            message: "Should not be longer than 20 characters!"
-                    email:
-                        "should have word '@'":
-                            rule: /@/g
-                            message: "Should have word '@'!"
+            fields:
+                firstName:
+                    "not longer than 20 characters":
+                        rule: () ->
+                            return true
+                        message: "Should not be longer than 20 characters!"
+                email:
+                    "should have word '@'":
+                        rule: /@/g
+                        message: "Should have word '@'!"
 
 
         validationPlugin:
@@ -47,14 +42,11 @@ define [
 
         beforeEach (done) ->
             @pluginUtils = new ValidatePluginUtils()
-            wire(formSpec).then (@ctx) =>           
-                @options = @ctx.options
-                console.log "@options", @options
+            wire(formSpec.options).then (@ctx) =>           
+                @options = @ctx
                 done()
             .otherwise (err) ->
                 console.log "ERROR", err
-                
-            done()
 
         it "rule regexp should be normalized to function", (done) ->
             rule = /test/
@@ -69,9 +61,9 @@ define [
         it "pipelineStrategies returns promise", (done) ->
             extracted = @pluginUtils.extractStrategies @options
             extracted = @pluginUtils.normalizeArray extracted
-            # for obj in extracted
-            #     console.log "OBJ::", obj
-            #     expect(@pluginUtils.toPromise(obj.rule)).toBePromise()
+            console.log "extracted", extracted
+            for obj in extracted
+                expect(obj.rule).toBePromise()
             done()
 
 

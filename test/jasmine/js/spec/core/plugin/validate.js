@@ -5,7 +5,7 @@ define(["wire", "core/plugin/utils/validatePluginUtils"], function(wire, Validat
     return FormController = (function() {
       function FormController() {}
 
-      FormController.prototype.firstNameRule = function() {
+      FormController.prototype.firstNameRule = function(value) {
         return true;
       };
 
@@ -18,21 +18,19 @@ define(["wire", "core/plugin/utils/validatePluginUtils"], function(wire, Validat
   formSpec = {
     $plugins: ["core/plugin/validate"],
     options: {
-      literal: {
-        fields: {
-          firstName: {
-            "not longer than 20 characters": {
-              rule: {
-                $ref: 'formController.firstNameRule'
-              },
-              message: "Should not be longer than 20 characters!"
-            }
-          },
-          email: {
-            "should have word '@'": {
-              rule: /@/g,
-              message: "Should have word '@'!"
-            }
+      fields: {
+        firstName: {
+          "not longer than 20 characters": {
+            rule: function() {
+              return true;
+            },
+            message: "Should not be longer than 20 characters!"
+          }
+        },
+        email: {
+          "should have word '@'": {
+            rule: /@/g,
+            message: "Should have word '@'!"
           }
         }
       }
@@ -48,15 +46,13 @@ define(["wire", "core/plugin/utils/validatePluginUtils"], function(wire, Validat
     beforeEach(function(done) {
       var _this = this;
       this.pluginUtils = new ValidatePluginUtils();
-      wire(formSpec).then(function(ctx) {
+      return wire(formSpec.options).then(function(ctx) {
         _this.ctx = ctx;
-        _this.options = _this.ctx.options;
-        console.log("@options", _this.options);
+        _this.options = _this.ctx;
         return done();
       }).otherwise(function(err) {
         return console.log("ERROR", err);
       });
-      return done();
     });
     it("rule regexp should be normalized to function", function(done) {
       var rule;
@@ -73,9 +69,14 @@ define(["wire", "core/plugin/utils/validatePluginUtils"], function(wire, Validat
       return done();
     });
     return it("pipelineStrategies returns promise", function(done) {
-      var extracted;
+      var extracted, obj, _i, _len;
       extracted = this.pluginUtils.extractStrategies(this.options);
       extracted = this.pluginUtils.normalizeArray(extracted);
+      console.log("extracted", extracted);
+      for (_i = 0, _len = extracted.length; _i < _len; _i++) {
+        obj = extracted[_i];
+        expect(obj.rule).toBePromise();
+      }
       return done();
     });
   });

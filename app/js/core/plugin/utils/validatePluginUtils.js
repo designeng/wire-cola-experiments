@@ -12,10 +12,12 @@ define(["when", "underscore", "jquery"], function(When, _, $) {
       if (_.isFunction(rule)) {
         return rule;
       } else if (_.isRegExp(rule)) {
-        return ruleFunction = function() {
-          var value;
-          value = Array.prototype.slice.call(arguments, 0, 1);
-          return value.match(rule);
+        return ruleFunction = function(value) {
+          if (value) {
+            return String.prototype.match.call(value, rule);
+          } else {
+            return false;
+          }
         };
       }
     };
@@ -35,6 +37,7 @@ define(["when", "underscore", "jquery"], function(When, _, $) {
       var func;
       func = this.normalizeRule(item.rule);
       console.log("func:::::::", func);
+      item.rule = this.toPromise(func, item.message);
       return item;
     };
 
