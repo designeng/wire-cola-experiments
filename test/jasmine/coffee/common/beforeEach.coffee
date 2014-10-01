@@ -1,7 +1,9 @@
 define [
-    "marionette"
     "underscore"
-], (Marionette, _) ->
+    "when"
+    "jasmine"
+    "boot"
+], (_, When) ->
 
     beforeEach -> 
 
@@ -20,6 +22,13 @@ define [
                             pass: _.isObject(actual)
                         }
                 }
+            toBeFunction: () ->
+                return {
+                    compare: (actual) ->
+                        return  {
+                            pass: _.isFunction(actual)
+                        }
+                }
             toBeArray: () ->
                 return {
                     compare: (actual) ->
@@ -34,6 +43,15 @@ define [
                             pass: _.indexOf(array, actual)
                         }
                 }
+
+            toBePromise: () ->
+                return {
+                    compare: (actual) ->
+                        return  {
+                            pass: When.isPromiseLike(actual)
+                        }
+                }
+
 
 
 

@@ -1,27 +1,31 @@
 define [
     "underscore"
     "jquery"
-], (_, $) ->
+    "./utils/validatePluginUtils"
+], (_, $, ValidatePluginUtils) ->
+
+    noop = () ->
+
+    pluginUtils = new ValidatePluginUtils()
 
     return (options) ->
 
         validateFacet = (resolver, facet, wire) ->
-            target = facet.target
+            wire(facet.options)
+                .then (options) ->
+                    console.log "options", options
 
-            # form can have more then one element
-            for name, strategies of facet.options.fields
-                # get the element value
-                value = target.elements[name].value
-                # can be more then one strategy
-                for strategyName, strategy of strategies
-                    # check for function type
-                    if _.isFunction strategy.rule
-                        console.log "strategy.rule called:::", strategy.rule(1)
-                    else if _.isRegExp strategy.rule
-                        console.log "Regexp::::", strategy.rule
+                    target = facet.target
 
-            resolver.resolve()
+                    strategies = pluginUtils.extractStrategies(options)
+                    
+                    pluginUtils.pipelineStrategies(strategies)
 
+
+                    resolver.resolve()
+
+
+        # return plugin object
         context:
             destroy: (resolver, wire) ->
                 resolver.resolve()

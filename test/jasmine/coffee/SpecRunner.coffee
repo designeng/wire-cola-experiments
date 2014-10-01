@@ -18,11 +18,10 @@ requirejs.s.contexts._.config.shim["jasmine-html"] = {deps: ['jasmine'], exports
 requirejs.s.contexts._.config.shim["boot"] = {deps: ['jasmine', 'jasmine-html'], exports: 'jasmine'}
 
 require [
-    "boot"
     "underscore"
     "js/SpecIndex.js"
     "/test/jasmine/js/common/beforeEach.js"
-], (boot, _, indexSpecs) ->
+], (_, indexSpecs) ->
 
     pathToSpec = "/test/jasmine/js/spec/"
     extention = ".js"

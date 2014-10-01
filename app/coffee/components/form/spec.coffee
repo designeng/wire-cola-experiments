@@ -13,7 +13,6 @@ define
         properties:
             formView: {$ref: 'formView'}
 
-
     formPattern:
         module: "hbs!components/form/template.html"
 
@@ -37,12 +36,12 @@ define
             fields:
                 firstName:
                     "not longer than 20 characters":
-                        rule: (value) ->
-                            if value.length > 20
-                                return false
-                            else 
-                                return true
-                        message: "Should not be longer than 20 characters"
+                        rule: {$ref: 'formController.firstNameRule'}
+                        message: "Should not be longer than 20 characters!"
+                email:
+                    "should have word '@'":
+                        rule: /@/g
+                        message: "Should have word '@'!"
             behaviour: {$ref: "formController.formValidationBehaviourHandler"}
 
 

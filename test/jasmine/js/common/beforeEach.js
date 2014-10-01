@@ -1,10 +1,5 @@
-define(["marionette", "underscore"], function(Marionette, _) {
+define(["underscore", "when", "jasmine", "boot"], function(_, When) {
   return beforeEach(function() {
-    jasmine.Expectation.addMatchers({
-      toBeInstanceOf: function(type) {
-        return this.actual instanceof type;
-      }
-    });
     return jasmine.addMatchers({
       toBeString: function() {
         return {
@@ -24,6 +19,15 @@ define(["marionette", "underscore"], function(Marionette, _) {
           }
         };
       },
+      toBeFunction: function() {
+        return {
+          compare: function(actual) {
+            return {
+              pass: _.isFunction(actual)
+            };
+          }
+        };
+      },
       toBeArray: function() {
         return {
           compare: function(actual) {
@@ -38,6 +42,15 @@ define(["marionette", "underscore"], function(Marionette, _) {
           compare: function(actual) {
             return {
               pass: _.indexOf(array, actual)
+            };
+          }
+        };
+      },
+      toBePromise: function() {
+        return {
+          compare: function(actual) {
+            return {
+              pass: When.isPromiseLike(actual)
             };
           }
         };

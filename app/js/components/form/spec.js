@@ -41,14 +41,16 @@ define({
       fields: {
         firstName: {
           "not longer than 20 characters": {
-            rule: function(value) {
-              if (value.length > 20) {
-                return false;
-              } else {
-                return true;
-              }
+            rule: {
+              $ref: 'formController.firstNameRule'
             },
-            message: "Should not be longer than 20 characters"
+            message: "Should not be longer than 20 characters!"
+          }
+        },
+        email: {
+          "should have word '@'": {
+            rule: /@/g,
+            message: "Should have word '@'!"
           }
         }
       },
