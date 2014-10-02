@@ -3,8 +3,10 @@ define [
     "when/sequence"
     "underscore"
     "jquery"
-    "./form"
-], (When, sequence, _, $, FormUtil) ->
+    "./colaway/bindingHandler"
+    "./colaway/guess"
+    "./colaway/form"
+], (When, sequence, _, $, bindingHandler, guess, FormUtil) ->
 
     class ValidatePluginUtils
    
@@ -12,6 +14,8 @@ define [
         $target: null
 
         defaultInputEvent: "change"
+
+        constructor: ->
 
         normalizeTarget: (target) ->
             if target instanceof jQuery
@@ -22,28 +26,13 @@ define [
 
         registerTarget: (target) ->
             @$target = @normalizeTarget(target)
+
             return @$target
 
         unregisterTarget: ->
             @$target.unbind()
 
-        defaultInputHandler: (options) ->
-            inputEvent = options.event || @defaultInputEvent
 
-        setInputHandler: (name, handler) ->
-            $input = @$target.find("[name='#{name}']")
-            handler = handler || @defaultInputHandler()
-            $input.bind defaultInputEvent, handler
-
-        getAllInputs: () ->
-            inputs = @$target.each () ->
-                $(@).filter(':input')
-
-            # for input of inputs
-
-        formElementFinder: (rootNode, nodeName) ->
-            if rootNode.elements and rootNode.elements.length
-                return rootNode.elements[nodeName]
 
         getFormElementValue: (form, name) ->
             return form.elements[name].value
@@ -58,15 +47,13 @@ define [
             if _.isFunction rule
                 return rule
             else if _.isRegExp rule
-                return ruleFunction = (value) ->
-                    # try
-                    #     return value.match rule
-                    # catch e
-                    #     return false
-                    
-                    if typeof value != "undefined"
-                        return String::match.call value, rule
-                    else
+                return (value) ->
+                    console.log "value >>>>>>>>>>>>>>", value
+                    try
+                        # value = Array::slice.call(arguments, 1)
+                        return value.match rule
+                    catch e
+                        console.log ">>>>>>>>>>>>>>>", e
                         return false
 
         # @returns {Array}
@@ -77,7 +64,7 @@ define [
             return _strategies
 
         toPromise: (func, message) ->
-            promise = When.promise (resolve, reject, notify) ->
+            promise = When.promise (resolve, reject) ->
                 isValid = func()
                 if isValid
                     resolve(true)
@@ -87,13 +74,16 @@ define [
 
         normalizeStrategyItem: (item) ->
             func = @normalizeRule(item.rule)
+            console.log "func::::::::::::",func
             # we should return item without message field - it's incapsulated in promise now
             _item = {}
-            _item.rule = @toPromise(func, item.message)
+            # _item.rule = @toPromise(func, item.message)
+            _item.rule = item.rule
             return _item
 
         normalizeStrategyItemsArray: (array) ->
             return _.map array, (item) =>
+                console.log "ITEM:::", item
                 return @normalizeStrategyItem(item)
 
         getRulesArray: (array) ->
@@ -101,10 +91,28 @@ define [
                 return item.rule
 
 
-
-
-        validate: (extracted, valuesInArray) ->
-            return sequence(extracted).then (res) ->
+        validate: (extracted, values) ->
+            return sequence(extracted, values).then (res) ->
                 console.log "RES::", res
             , (err) -> console.log "ERR:::", err
+
+
+        # ------- deprecated? ---------------
+        getAllInputs: () ->
+            inputs = @$target.each () ->
+                $(@).filter(':input')
+
+        defaultInputHandler: (options) ->
+            inputEvent = options.event || @defaultInputEvent
+
+        setInputHandler: (name, handler) ->
+            $input = @$target.find("[name='#{name}']")
+            handler = handler || @defaultInputHandler()
+            $input.bind defaultInputEvent, handler
+
+
+        # cola-way function 
+        # formElementFinder: (rootNode, nodeName) ->
+        #     if rootNode.elements and rootNode.elements.length
+        #         return rootNode.elements[nodeName]
 

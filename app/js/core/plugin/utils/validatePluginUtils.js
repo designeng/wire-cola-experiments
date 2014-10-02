@@ -1,13 +1,13 @@
-define(["when", "when/sequence", "underscore", "jquery", "./form"], function(When, sequence, _, $, FormUtil) {
+define(["when", "when/sequence", "underscore", "jquery", "./colaway/bindingHandler", "./colaway/guess", "./colaway/form"], function(When, sequence, _, $, bindingHandler, guess, FormUtil) {
   var ValidatePluginUtils;
   return ValidatePluginUtils = (function() {
-    function ValidatePluginUtils() {}
-
     ValidatePluginUtils.prototype.target = null;
 
     ValidatePluginUtils.prototype.$target = null;
 
     ValidatePluginUtils.prototype.defaultInputEvent = "change";
+
+    function ValidatePluginUtils() {}
 
     ValidatePluginUtils.prototype.normalizeTarget = function(target) {
       if (target instanceof jQuery) {
@@ -27,31 +27,6 @@ define(["when", "when/sequence", "underscore", "jquery", "./form"], function(Whe
       return this.$target.unbind();
     };
 
-    ValidatePluginUtils.prototype.defaultInputHandler = function(options) {
-      var inputEvent;
-      return inputEvent = options.event || this.defaultInputEvent;
-    };
-
-    ValidatePluginUtils.prototype.setInputHandler = function(name, handler) {
-      var $input;
-      $input = this.$target.find("[name='" + name + "']");
-      handler = handler || this.defaultInputHandler();
-      return $input.bind(defaultInputEvent, handler);
-    };
-
-    ValidatePluginUtils.prototype.getAllInputs = function() {
-      var inputs;
-      return inputs = this.$target.each(function() {
-        return $(this).filter(':input');
-      });
-    };
-
-    ValidatePluginUtils.prototype.formElementFinder = function(rootNode, nodeName) {
-      if (rootNode.elements && rootNode.elements.length) {
-        return rootNode.elements[nodeName];
-      }
-    };
-
     ValidatePluginUtils.prototype.getFormElementValue = function(form, name) {
       return form.elements[name].value;
     };
@@ -62,14 +37,17 @@ define(["when", "when/sequence", "underscore", "jquery", "./form"], function(Whe
     };
 
     ValidatePluginUtils.prototype.normalizeRule = function(rule) {
-      var ruleFunction;
       if (_.isFunction(rule)) {
         return rule;
       } else if (_.isRegExp(rule)) {
-        return ruleFunction = function(value) {
-          if (typeof value !== "undefined") {
-            return String.prototype.match.call(value, rule);
-          } else {
+        return function(value) {
+          var e;
+          console.log("value >>>>>>>>>>>>>>", value);
+          try {
+            return value.match(rule);
+          } catch (_error) {
+            e = _error;
+            console.log(">>>>>>>>>>>>>>>", e);
             return false;
           }
         };
@@ -89,7 +67,7 @@ define(["when", "when/sequence", "underscore", "jquery", "./form"], function(Whe
 
     ValidatePluginUtils.prototype.toPromise = function(func, message) {
       var promise;
-      promise = When.promise(function(resolve, reject, notify) {
+      promise = When.promise(function(resolve, reject) {
         var isValid;
         isValid = func();
         if (isValid) {
@@ -104,14 +82,16 @@ define(["when", "when/sequence", "underscore", "jquery", "./form"], function(Whe
     ValidatePluginUtils.prototype.normalizeStrategyItem = function(item) {
       var func, _item;
       func = this.normalizeRule(item.rule);
+      console.log("func::::::::::::", func);
       _item = {};
-      _item.rule = this.toPromise(func, item.message);
+      _item.rule = item.rule;
       return _item;
     };
 
     ValidatePluginUtils.prototype.normalizeStrategyItemsArray = function(array) {
       var _this = this;
       return _.map(array, function(item) {
+        console.log("ITEM:::", item);
         return _this.normalizeStrategyItem(item);
       });
     };
@@ -123,12 +103,31 @@ define(["when", "when/sequence", "underscore", "jquery", "./form"], function(Whe
       });
     };
 
-    ValidatePluginUtils.prototype.validate = function(extracted, valuesInArray) {
-      return sequence(extracted).then(function(res) {
+    ValidatePluginUtils.prototype.validate = function(extracted, values) {
+      return sequence(extracted, values).then(function(res) {
         return console.log("RES::", res);
       }, function(err) {
         return console.log("ERR:::", err);
       });
+    };
+
+    ValidatePluginUtils.prototype.getAllInputs = function() {
+      var inputs;
+      return inputs = this.$target.each(function() {
+        return $(this).filter(':input');
+      });
+    };
+
+    ValidatePluginUtils.prototype.defaultInputHandler = function(options) {
+      var inputEvent;
+      return inputEvent = options.event || this.defaultInputEvent;
+    };
+
+    ValidatePluginUtils.prototype.setInputHandler = function(name, handler) {
+      var $input;
+      $input = this.$target.find("[name='" + name + "']");
+      handler = handler || this.defaultInputHandler();
+      return $input.bind(defaultInputEvent, handler);
     };
 
     return ValidatePluginUtils;

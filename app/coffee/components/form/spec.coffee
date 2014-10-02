@@ -38,7 +38,8 @@ define
             fields:
                 firstName:
                     "not longer than 20 characters":
-                        rule: {$ref: 'formController.firstNameRule'}
+                        rule: (value) ->
+                            return true
                         message: "Should not be longer than 20 characters!"
                 email:
                     "should have word '@'":

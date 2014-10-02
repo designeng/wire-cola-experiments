@@ -44,8 +44,8 @@ define({
       fields: {
         firstName: {
           "not longer than 20 characters": {
-            rule: {
-              $ref: 'formController.firstNameRule'
+            rule: function(value) {
+              return true;
             },
             message: "Should not be longer than 20 characters!"
           }

@@ -8,6 +8,10 @@ define [
 
     noop = () ->
 
+    doValidate = (obj, validationFunc, structure) ->
+        console.log "structure:::", structure
+        validationFunc(structure, obj)
+
     return (options) ->
 
         # validation should be on:
@@ -33,13 +37,25 @@ define [
                     extracted = pluginUtils.normalizeStrategyItemsArray extracted
                     extracted = pluginUtils.getRulesArray extracted
 
-                    pluginUtils.validate(extracted)
+                    # pluginUtils.validate(extracted)
 
                     errors = []
 
+
                     validate = () ->
+
                         obj = pluginUtils.getAllFormValues(target)
+
                         console.log "FORM -> OBJ:::", obj
+
+                        promise = pluginUtils.validate(extracted)
+                        # promise.then (res) ->
+                        #     console.log "PROMISE RES:::", res
+                        # , (err) ->
+                        #     console.error "PROMISE ERROR", err
+
+
+                        # doValidate(obj, pluginUtils.validate, extracted)
 
                         if options.afterValidation?
                             options.afterValidation(target, errors)
