@@ -8,9 +8,12 @@ define [
 
     noop = () ->
 
-    pluginUtils = new ValidatePluginUtils()
-
     return (options) ->
+
+        # validation should be on:
+        # "submit"
+        # "change" (mark it as valid after change)
+        # "keyup" - if field was validated and not valid
 
         validateFacet = (resolver, facet, wire) ->
             wire(facet.options)
@@ -18,8 +21,14 @@ define [
                     console.log "options", options
 
                     target = facet.target
-                    $target = $(target)
 
+                    pluginUtils = new ValidatePluginUtils(target)
+                    
+                    $target = pluginUtils.registerTarget(target)
+
+                    pluginUtils.getAllInputs()
+
+                    
                     extracted = pluginUtils.extractStrategies(options)
                     extracted = pluginUtils.normalizeStrategyItemsArray extracted
                     extracted = pluginUtils.getRulesArray extracted
@@ -29,6 +38,9 @@ define [
                     errors = []
 
                     validate = () ->
+                        obj = pluginUtils.getAllFormValues(target)
+                        console.log "FORM -> OBJ:::", obj
+
                         if options.afterValidation?
                             options.afterValidation(target, errors)
                         return false
@@ -49,7 +61,8 @@ define [
         context:
             destroy: (resolver, wire) ->
                 console.log "destroyed>>>>"
-                $target.unbind()
+
+                pluginUtils.unregisterTarget()
                 resolver.resolve()
 
         facets: 

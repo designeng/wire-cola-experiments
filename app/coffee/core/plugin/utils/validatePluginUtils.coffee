@@ -3,12 +3,55 @@ define [
     "when/sequence"
     "underscore"
     "jquery"
-], (When, sequence, _, $) ->
+    "./form"
+], (When, sequence, _, $, FormUtil) ->
 
     class ValidatePluginUtils
+   
+        target: null
+        $target: null
+
+        defaultInputEvent: "change"
+
+        normalizeTarget: (target) ->
+            if target instanceof jQuery
+                return target
+            else
+                @target = target
+                return $(target)
+
+        registerTarget: (target) ->
+            @$target = @normalizeTarget(target)
+            return @$target
+
+        unregisterTarget: ->
+            @$target.unbind()
+
+        defaultInputHandler: (options) ->
+            inputEvent = options.event || @defaultInputEvent
+
+        setInputHandler: (name, handler) ->
+            $input = @$target.find("[name='#{name}']")
+            handler = handler || @defaultInputHandler()
+            $input.bind defaultInputEvent, handler
+
+        getAllInputs: () ->
+            inputs = @$target.each () ->
+                $(@).filter(':input')
+
+            # for input of inputs
+
+        formElementFinder: (rootNode, nodeName) ->
+            if rootNode.elements and rootNode.elements.length
+                return rootNode.elements[nodeName]
 
         getFormElementValue: (form, name) ->
             return form.elements[name].value
+
+        getAllFormValues: (form) ->
+            console.log "@form:::", form
+            # return formToObject(form)
+            return FormUtil.getValues(form)
 
         # we want deal with the function
         normalizeRule: (rule) ->

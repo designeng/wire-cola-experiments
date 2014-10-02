@@ -1,10 +1,64 @@
-define(["when", "when/sequence", "underscore", "jquery"], function(When, sequence, _, $) {
+define(["when", "when/sequence", "underscore", "jquery", "./form"], function(When, sequence, _, $, FormUtil) {
   var ValidatePluginUtils;
   return ValidatePluginUtils = (function() {
     function ValidatePluginUtils() {}
 
+    ValidatePluginUtils.prototype.target = null;
+
+    ValidatePluginUtils.prototype.$target = null;
+
+    ValidatePluginUtils.prototype.defaultInputEvent = "change";
+
+    ValidatePluginUtils.prototype.normalizeTarget = function(target) {
+      if (target instanceof jQuery) {
+        return target;
+      } else {
+        this.target = target;
+        return $(target);
+      }
+    };
+
+    ValidatePluginUtils.prototype.registerTarget = function(target) {
+      this.$target = this.normalizeTarget(target);
+      return this.$target;
+    };
+
+    ValidatePluginUtils.prototype.unregisterTarget = function() {
+      return this.$target.unbind();
+    };
+
+    ValidatePluginUtils.prototype.defaultInputHandler = function(options) {
+      var inputEvent;
+      return inputEvent = options.event || this.defaultInputEvent;
+    };
+
+    ValidatePluginUtils.prototype.setInputHandler = function(name, handler) {
+      var $input;
+      $input = this.$target.find("[name='" + name + "']");
+      handler = handler || this.defaultInputHandler();
+      return $input.bind(defaultInputEvent, handler);
+    };
+
+    ValidatePluginUtils.prototype.getAllInputs = function() {
+      var inputs;
+      return inputs = this.$target.each(function() {
+        return $(this).filter(':input');
+      });
+    };
+
+    ValidatePluginUtils.prototype.formElementFinder = function(rootNode, nodeName) {
+      if (rootNode.elements && rootNode.elements.length) {
+        return rootNode.elements[nodeName];
+      }
+    };
+
     ValidatePluginUtils.prototype.getFormElementValue = function(form, name) {
       return form.elements[name].value;
+    };
+
+    ValidatePluginUtils.prototype.getAllFormValues = function(form) {
+      console.log("@form:::", form);
+      return FormUtil.getValues(form);
     };
 
     ValidatePluginUtils.prototype.normalizeRule = function(rule) {

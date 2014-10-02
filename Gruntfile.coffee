@@ -45,6 +45,13 @@ module.exports = (grunt) ->
                     ext: '.js'
                 ]
 
+        js2coffee:
+            options:
+                indent: "    "
+            single:
+                src: "bower_components/cola/dom/bindingHandler.js"
+                dest: "app/coffee/core/plugin/utils/bindingHandler.coffee"
+
         copy:
             app:
                 files: [
@@ -80,6 +87,7 @@ module.exports = (grunt) ->
 
     grunt.loadNpmTasks "grunt-contrib-watch"
     grunt.loadNpmTasks "grunt-contrib-coffee"
+    grunt.loadNpmTasks "grunt-js2coffee"
     grunt.loadNpmTasks "grunt-contrib-copy"
     grunt.loadNpmTasks "grunt-contrib-connect"
     grunt.loadNpmTasks "grunt-contrib-concat"
