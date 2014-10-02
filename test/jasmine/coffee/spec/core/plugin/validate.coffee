@@ -58,12 +58,17 @@ define [
             expect(@pluginUtils.normalizeRule(rule)).toBeFunction()
             done()
 
-        it "pipelineStrategies returns promise", (done) ->
+        it "normalizeStrategyItemsArray is array of promises", (done) ->
             extracted = @pluginUtils.extractStrategies @options
-            extracted = @pluginUtils.normalizeArray extracted
             console.log "extracted", extracted
+            extracted = @pluginUtils.normalizeStrategyItemsArray extracted
+            console.log "extracted", extracted
+
+            expect(extracted).toBeArray()
+
             for obj in extracted
                 expect(obj.rule).toBePromise()
+
             done()
 
 

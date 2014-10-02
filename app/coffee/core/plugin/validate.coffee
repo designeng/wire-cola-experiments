@@ -19,7 +19,6 @@ define [
 
                     strategies = pluginUtils.extractStrategies(options)
                     
-                    pluginUtils.pipelineStrategies(strategies)
 
 
                     resolver.resolve()

@@ -6,7 +6,7 @@ define [
 
         onReady: ->
 
-        formValidationBehaviourHandler: (target, errors) ->
+        afterValidation: (target, errors) ->
 
 
 

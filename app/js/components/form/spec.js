@@ -54,8 +54,8 @@ define({
           }
         }
       },
-      behaviour: {
-        $ref: "formController.formValidationBehaviourHandler"
+      afterValidation: {
+        $ref: "formController.afterValidation"
       }
     }
   }

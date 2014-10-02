@@ -68,11 +68,13 @@ define(["wire", "core/plugin/utils/validatePluginUtils"], function(wire, Validat
       expect(this.pluginUtils.normalizeRule(rule)).toBeFunction();
       return done();
     });
-    return it("pipelineStrategies returns promise", function(done) {
+    return it("normalizeStrategyItemsArray is array of promises", function(done) {
       var extracted, obj, _i, _len;
       extracted = this.pluginUtils.extractStrategies(this.options);
-      extracted = this.pluginUtils.normalizeArray(extracted);
       console.log("extracted", extracted);
+      extracted = this.pluginUtils.normalizeStrategyItemsArray(extracted);
+      console.log("extracted", extracted);
+      expect(extracted).toBeArray();
       for (_i = 0, _len = extracted.length; _i < _len; _i++) {
         obj = extracted[_i];
         expect(obj.rule).toBePromise();

@@ -42,6 +42,6 @@ define
                     "should have word '@'":
                         rule: /@/g
                         message: "Should have word '@'!"
-            behaviour: {$ref: "formController.formValidationBehaviourHandler"}
+            afterValidation: {$ref: "formController.afterValidation"}
 
 

@@ -5,7 +5,7 @@ define(["underscore"], function(_) {
 
     FormController.prototype.onReady = function() {};
 
-    FormController.prototype.formValidationBehaviourHandler = function(target, errors) {};
+    FormController.prototype.afterValidation = function(target, errors) {};
 
     FormController.prototype.firstNameRule = function(value) {
       if (value.length > 20) {

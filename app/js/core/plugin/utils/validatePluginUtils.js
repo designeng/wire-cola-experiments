@@ -33,24 +33,8 @@ define(["when", "underscore", "jquery"], function(When, _, $) {
       return _strategies;
     };
 
-    ValidatePluginUtils.prototype.normalizeStrategyItem = function(item) {
-      var func;
-      func = this.normalizeRule(item.rule);
-      console.log("func:::::::", func);
-      item.rule = this.toPromise(func, item.message);
-      return item;
-    };
-
-    ValidatePluginUtils.prototype.normalizeArray = function(array) {
-      var _this = this;
-      return _.map(array, function(item) {
-        return _this.normalizeStrategyItem(item);
-      });
-    };
-
     ValidatePluginUtils.prototype.toPromise = function(func, message) {
       var promise;
-      console.log("FUNC:::", func);
       promise = When.promise(function(resolve, reject, notify) {
         var isValid;
         isValid = func();
@@ -63,15 +47,22 @@ define(["when", "underscore", "jquery"], function(When, _, $) {
       return promise;
     };
 
-    ValidatePluginUtils.prototype.pipelineStrategies = function(strategies) {
-      var strategy, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = strategies.length; _i < _len; _i++) {
-        strategy = strategies[_i];
-        _results.push(console.log("strategy::::::::::", strategy));
-      }
-      return _results;
+    ValidatePluginUtils.prototype.normalizeStrategyItem = function(item) {
+      var func, _item;
+      func = this.normalizeRule(item.rule);
+      _item = {};
+      _item.rule = this.toPromise(func, item.message);
+      return _item;
     };
+
+    ValidatePluginUtils.prototype.normalizeStrategyItemsArray = function(array) {
+      var _this = this;
+      return _.map(array, function(item) {
+        return _this.normalizeStrategyItem(item);
+      });
+    };
+
+    ValidatePluginUtils.prototype.validate = function() {};
 
     return ValidatePluginUtils;
 

@@ -10,7 +10,6 @@ define(["underscore", "jquery", "./utils/validatePluginUtils"], function(_, $, V
         console.log("options", options);
         target = facet.target;
         strategies = pluginUtils.extractStrategies(options);
-        pluginUtils.pipelineStrategies(strategies);
         return resolver.resolve();
       });
     };

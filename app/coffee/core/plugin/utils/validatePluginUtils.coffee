@@ -32,18 +32,7 @@ define [
                 _strategies.push _.values(strategies)[0]
             return _strategies
 
-        normalizeStrategyItem: (item) ->
-            func = @normalizeRule(item.rule)
-            console.log "func:::::::", func
-            item.rule = @toPromise(func, item.message)
-            return item
-
-        normalizeArray: (array) ->
-            return _.map array, (item) =>
-                return @normalizeStrategyItem(item)
-
         toPromise: (func, message) ->
-            console.log "FUNC:::", func
             promise = When.promise (resolve, reject, notify) ->
                 isValid = func()
                 if isValid
@@ -52,6 +41,19 @@ define [
                     reject(message)
             return promise
 
-        pipelineStrategies: (strategies) ->
-            for strategy in strategies
-                console.log "strategy::::::::::", strategy
+        normalizeStrategyItem: (item) ->
+            func = @normalizeRule(item.rule)
+            # we should return item without message field - it's incapsulated in promise now
+            _item = {}
+            _item.rule = @toPromise(func, item.message)
+            return _item
+
+        normalizeStrategyItemsArray: (array) ->
+            return _.map array, (item) =>
+                return @normalizeStrategyItem(item)
+
+
+
+
+        validate: () ->
+
