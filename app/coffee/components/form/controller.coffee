@@ -4,9 +4,17 @@ define [
 
     class FormController
 
-        onReady: ->
+        testProp: "testProp"
 
-        afterValidation: (target, errors) ->
+        onReady: ->
+            
+
+        afterValidation: (target, errors) =>
+
+            console.log "afterValidation::::", target, errors
+            console.log "prop::::", @testProp
+
+            
 
 
 

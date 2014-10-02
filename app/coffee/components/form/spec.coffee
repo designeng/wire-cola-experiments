@@ -10,6 +10,8 @@ define
 
     formController:
         create: "components/form/controller"
+        ready:
+            onReady: {}
         properties:
             formView: {$ref: 'formView'}
 

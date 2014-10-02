@@ -2,6 +2,9 @@ define({
   $plugins: ["wire/debug", "wire/dom", "wire/dom/render", "wire/on", "core/plugin/template/hb", "core/plugin/validate"],
   formController: {
     create: "components/form/controller",
+    ready: {
+      onReady: {}
+    },
     properties: {
       formView: {
         $ref: 'formView'

@@ -1,4 +1,4 @@
-define(["when", "underscore", "jquery"], function(When, _, $) {
+define(["when", "when/sequence", "underscore", "jquery"], function(When, sequence, _, $) {
   var ValidatePluginUtils;
   return ValidatePluginUtils = (function() {
     function ValidatePluginUtils() {}
@@ -13,7 +13,7 @@ define(["when", "underscore", "jquery"], function(When, _, $) {
         return rule;
       } else if (_.isRegExp(rule)) {
         return ruleFunction = function(value) {
-          if (value) {
+          if (typeof value !== "undefined") {
             return String.prototype.match.call(value, rule);
           } else {
             return false;
@@ -62,7 +62,20 @@ define(["when", "underscore", "jquery"], function(When, _, $) {
       });
     };
 
-    ValidatePluginUtils.prototype.validate = function() {};
+    ValidatePluginUtils.prototype.getRulesArray = function(array) {
+      var _this = this;
+      return _.map(array, function(item) {
+        return item.rule;
+      });
+    };
+
+    ValidatePluginUtils.prototype.validate = function(extracted, valuesInArray) {
+      return sequence(extracted).then(function(res) {
+        return console.log("RES::", res);
+      }, function(err) {
+        return console.log("ERR:::", err);
+      });
+    };
 
     return ValidatePluginUtils;
 

@@ -1,8 +1,9 @@
 define [
     "when"
+    "when/sequence"
     "underscore"
     "jquery"
-], (When, _, $) ->
+], (When, sequence, _, $) ->
 
     class ValidatePluginUtils
 
@@ -20,7 +21,7 @@ define [
                     # catch e
                     #     return false
                     
-                    if value
+                    if typeof value != "undefined"
                         return String::match.call value, rule
                     else
                         return false
@@ -52,8 +53,15 @@ define [
             return _.map array, (item) =>
                 return @normalizeStrategyItem(item)
 
+        getRulesArray: (array) ->
+            return _.map array, (item) =>
+                return item.rule
 
 
 
-        validate: () ->
+
+        validate: (extracted, valuesInArray) ->
+            return sequence(extracted).then (res) ->
+                console.log "RES::", res
+            , (err) -> console.log "ERR:::", err
 

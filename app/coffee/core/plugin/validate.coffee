@@ -4,6 +4,8 @@ define [
     "./utils/validatePluginUtils"
 ], (_, $, ValidatePluginUtils) ->
 
+    $target = null
+
     noop = () ->
 
     pluginUtils = new ValidatePluginUtils()
@@ -16,8 +18,27 @@ define [
                     console.log "options", options
 
                     target = facet.target
+                    $target = $(target)
 
-                    strategies = pluginUtils.extractStrategies(options)
+                    extracted = pluginUtils.extractStrategies(options)
+                    extracted = pluginUtils.normalizeStrategyItemsArray extracted
+                    extracted = pluginUtils.getRulesArray extracted
+
+                    pluginUtils.validate(extracted)
+
+                    errors = []
+
+                    validate = () ->
+                        if options.afterValidation?
+                            options.afterValidation(target, errors)
+                        return false
+
+                    $target.bind "submit", validate
+
+                    
+
+
+                    # console.log "extracted", extracted
                     
 
 
@@ -27,6 +48,8 @@ define [
         # return plugin object
         context:
             destroy: (resolver, wire) ->
+                console.log "destroyed>>>>"
+                $target.unbind()
                 resolver.resolve()
 
         facets: 
