@@ -1,7 +1,7 @@
 # routerMainSpec
 define
     $plugins: [
-        "wire/debug"
+        # "wire/debug"
         "wire/dom"
         "core/plugin/contextRouter"
     ]
@@ -29,5 +29,8 @@ define
                     slot: {$ref: "dom.first!#page"}
                 "form"    :
                     spec: "components/form/spec"
+                    slot: {$ref: "dom.first!#page"}
+                "when"    :
+                    spec: "components/when/spec"
                     slot: {$ref: "dom.first!#page"}
 

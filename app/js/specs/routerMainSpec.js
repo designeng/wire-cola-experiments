@@ -1,5 +1,5 @@
 define({
-  $plugins: ["wire/debug", "wire/dom", "core/plugin/contextRouter"],
+  $plugins: ["wire/dom", "core/plugin/contextRouter"],
   appRouter: {
     contextRouter: {
       routes: {
@@ -41,6 +41,12 @@ define({
         },
         "form": {
           spec: "components/form/spec",
+          slot: {
+            $ref: "dom.first!#page"
+          }
+        },
+        "when": {
+          spec: "components/when/spec",
           slot: {
             $ref: "dom.first!#page"
           }
