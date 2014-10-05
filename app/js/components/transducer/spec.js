@@ -1,9 +1,9 @@
 define({
   $plugins: ["wire/debug", "wire/dom"],
   controller: {
-    create: "components/when/experiments/promised",
+    create: "components/transducer/controller",
     ready: {
-      wrapFunc: {}
+      onReady: {}
     }
   }
 });

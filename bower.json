@@ -22,7 +22,6 @@
     "underscore": "~1.7.0",
     "handlebars": "~2.0.0",
     "requirejs-handlebars": "~0.1.1",
-    "hbs": "~0.8.1",
     "requirejs-hbs": "~0.1.1"
   }
 }

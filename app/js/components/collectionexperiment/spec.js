@@ -48,7 +48,7 @@ define(function() {
             }
           ]
         },
-        customAdapter: {
+        adapter: {
           $ref: 'customNodeItemAdapter'
         }
       },

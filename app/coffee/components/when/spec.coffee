@@ -4,9 +4,15 @@ define
         "wire/dom"
     ]
 
+    # controller:
+    #     create: "components/when/controller"
+    #     ready:
+    #         # onReady: {}
+    #         # validate: {}
+    #         # validateWithSequence: {}
+
     controller:
-        create: "components/when/controller"
+        create: "components/when/experiments/promised"
         ready:
-            # onReady: {}
-            # validate: {}
-            validateWithSequence: {}
+            # ruleToPromiseArray: {}
+            wrapFunc: {}

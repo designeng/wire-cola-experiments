@@ -38,7 +38,7 @@ define ->
                 test: [
                     {handler: { $ref: 'controller.allHandler'}}
                 ]
-            customAdapter: {$ref: 'customNodeItemAdapter'}
+            adapter: {$ref: 'customNodeItemAdapter'}
         on:
             "click:li": "controller.onClickLi"
 

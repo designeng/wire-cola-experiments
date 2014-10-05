@@ -124,7 +124,7 @@ requirejs.s.contexts._.config.shim["boot"] = {
   exports: 'jasmine'
 };
 
-require(["boot", "underscore", "js/SpecIndex.js", "/test/jasmine/js/common/beforeEach.js"], function(boot, _, indexSpecs) {
+require(["underscore", "js/SpecIndex.js", "/test/jasmine/js/common/beforeEach.js"], function(_, indexSpecs) {
   var extention, pathToSpec, specs;
   pathToSpec = "/test/jasmine/js/spec/";
   extention = ".js";

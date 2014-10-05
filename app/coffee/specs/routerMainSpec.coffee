@@ -33,4 +33,7 @@ define
                 "when"    :
                     spec: "components/when/spec"
                     slot: {$ref: "dom.first!#page"}
+                "transducer"    :
+                    spec: "components/transducer/spec"
+                    slot: {$ref: "dom.first!#page"}
 
