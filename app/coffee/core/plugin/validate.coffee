@@ -88,6 +88,10 @@ define [
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
             # unbind elements
+
+            # TODO: fix - structure was changed
+            # keys = _.keys targetObject["inputs"]
+
             for inputName, input of targetObject["inputs"]
                 input.unbind()
             # unbind form
