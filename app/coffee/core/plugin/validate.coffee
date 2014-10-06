@@ -38,24 +38,31 @@ define [
     registerInputHandler = (targetName, inputName, event, handler) ->
         targetRegistrator[targetName]["inputs"][inputName].bind event, handler
 
+    normalizePoints = (points) ->
+        points = _.map points, (item) ->
+            item.rule = normalizeRule(item.rule)
+            return item
+        return points
+
+    # we want deal with the function
+    normalizeRule = (rule) ->
+        if _.isFunction rule
+            return rule
+        else if _.isRegExp rule
+            return (value) ->
+                return value.match rule
+
     registerInputStrategy = (targetName, inputStrategy) ->
         # ensure it exists
         if !targetRegistrator[targetName]["strategies"]
             targetRegistrator[targetName]["strategies"] = []
 
+        inputStrategy.points = normalizePoints(inputStrategy.points)
+
         targetRegistrator[targetName]["strategies"].push inputStrategy
 
     getInputStrategy = (targetName, fieldName) ->
         return _.where(targetRegistrator[targetName]["strategies"], {name: fieldName})[0]
-
-    processInputValue = (value, points) ->
-        result = {}
-        for point in points
-            if !point.rule(value)
-                result["errors"] = []
-                result["errors"].push point.message
-                break
-        return result
 
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
@@ -119,7 +126,6 @@ define [
                         # register strategy for input
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
-
                         # and bind to "change" event, but fieldName must be injected
                         validateInputValue = do (fieldName, targetName) -> 
                             (e) ->
@@ -130,7 +136,18 @@ define [
                                 strategyPoints = _.values(strategy.points)
                                 console.log "strategyPoints:::", strategyPoints
 
-                                result = processInputValue(e.target.value, strategyPoints)
+                                iterator = do (value = e.target.value) ->
+                                    (result, item) ->
+                                        if result.errors
+                                            return result
+                                        else
+                                            if !item.rule(value)
+                                                result["errors"] = []
+                                                result["errors"].push item.message
+                                            return result
+
+                                result = _.reduce(strategyPoints, iterator, {})
+
                                 console.log "processing res:::::", result
 
                                 # promise = When.filter(strategyPoints, predicate).then (res) ->

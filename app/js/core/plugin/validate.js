@@ -1,5 +1,5 @@
 define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, When, FormUtil) {
-  var createStrategy, getInputStrategy, noop, pluginObject, pointsToArray, processInputValue, refresh, registerInput, registerInputHandler, registerInputStrategy, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
+  var createStrategy, getInputStrategy, noop, normalizePoints, normalizeRule, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
   registerTarget = function(target) {
@@ -30,29 +30,33 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
   registerInputHandler = function(targetName, inputName, event, handler) {
     return targetRegistrator[targetName]["inputs"][inputName].bind(event, handler);
   };
+  normalizePoints = function(points) {
+    points = _.map(points, function(item) {
+      item.rule = normalizeRule(item.rule);
+      return item;
+    });
+    return points;
+  };
+  normalizeRule = function(rule) {
+    if (_.isFunction(rule)) {
+      return rule;
+    } else if (_.isRegExp(rule)) {
+      return function(value) {
+        return value.match(rule);
+      };
+    }
+  };
   registerInputStrategy = function(targetName, inputStrategy) {
     if (!targetRegistrator[targetName]["strategies"]) {
       targetRegistrator[targetName]["strategies"] = [];
     }
+    inputStrategy.points = normalizePoints(inputStrategy.points);
     return targetRegistrator[targetName]["strategies"].push(inputStrategy);
   };
   getInputStrategy = function(targetName, fieldName) {
     return _.where(targetRegistrator[targetName]["strategies"], {
       name: fieldName
     })[0];
-  };
-  processInputValue = function(value, points) {
-    var point, result, _i, _len;
-    result = {};
-    for (_i = 0, _len = points.length; _i < _len; _i++) {
-      point = points[_i];
-      if (!point.rule(value)) {
-        result["errors"] = [];
-        result["errors"].push(point.message);
-        break;
-      }
-    }
-    return result;
   };
   unbindAll = function() {
     var input, inputName, targetName, targetObject, _ref, _results;
@@ -120,12 +124,25 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
           });
           validateInputValue = (function(fieldName, targetName) {
             return function(e) {
-              var result, strategy, strategyPoints;
+              var iterator, result, strategy, strategyPoints;
               console.log(e.target.value);
               strategy = getInputStrategy(targetName, fieldName);
               strategyPoints = _.values(strategy.points);
               console.log("strategyPoints:::", strategyPoints);
-              result = processInputValue(e.target.value, strategyPoints);
+              iterator = (function(value) {
+                return function(result, item) {
+                  if (result.errors) {
+                    return result;
+                  } else {
+                    if (!item.rule(value)) {
+                      result["errors"] = [];
+                      result["errors"].push(item.message);
+                    }
+                    return result;
+                  }
+                };
+              })(e.target.value);
+              result = _.reduce(strategyPoints, iterator, {});
               return console.log("processing res:::::", result);
             };
           })(fieldName, targetName);

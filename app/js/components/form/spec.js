@@ -119,15 +119,15 @@ define({
             },
             message: "Should not be longer than 10 characters!"
           },
-          "not shorter than 15 characters": {
+          "not shorter than 5 characters": {
             rule: function(value) {
-              if (value.length < 15) {
+              if (value.length < 5) {
                 return false;
               } else {
                 return true;
               }
             },
-            message: "Should not be shorter than 15 characters!"
+            message: "Should not be shorter than 5 characters!"
           }
         },
         phone: {
