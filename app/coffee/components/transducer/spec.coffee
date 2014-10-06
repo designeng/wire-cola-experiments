@@ -5,6 +5,6 @@ define
     ]
 
     controller:
-        create: "components/transducer/controller"
+        create: "components/transducer/controller3"
         ready:
             onReady: {}
