@@ -37,10 +37,13 @@ define
         validate:
             fields:
                 firstName:
-                    "not longer than 20 characters":
+                    "not longer than 10 characters":
                         rule: (value) ->
-                            return true
-                        message: "Should not be longer than 20 characters!"
+                            if value > 10
+                                return false
+                            else
+                                return true
+                        message: "Should not be longer than 10 characters!"
                 email:
                     "should have word '@'":
                         rule: /@/g
