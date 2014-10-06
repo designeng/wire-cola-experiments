@@ -48,6 +48,15 @@ define [
     getInputStrategy = (targetName, fieldName) ->
         return _.where(targetRegistrator[targetName]["strategies"], {name: fieldName})[0]
 
+    processInputValue = (value, points) ->
+        result = {}
+        for point in points
+            if !point.rule(value)
+                result["errors"] = []
+                result["errors"].push point.message
+                break
+        return result
+
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
             # unbind elements
@@ -110,8 +119,6 @@ define [
                         # register strategy for input
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
-                        predicate = (item, index) ->
-                            console.log "predicate::::", item, index
 
                         # and bind to "change" event, but fieldName must be injected
                         validateInputValue = do (fieldName, targetName) -> 
@@ -123,8 +130,11 @@ define [
                                 strategyPoints = _.values(strategy.points)
                                 console.log "strategyPoints:::", strategyPoints
 
-                                promise = When.filter(strategyPoints, predicate).then (res) ->
-                                    console.log "SUCCESS", res
+                                result = processInputValue(e.target.value, strategyPoints)
+                                console.log "processing res:::::", result
+
+                                # promise = When.filter(strategyPoints, predicate).then (res) ->
+                                #     console.log "SUCCESS", res
 
                         registerInputHandler(targetName, fieldName, "change", validateInputValue)
 

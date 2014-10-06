@@ -1,5 +1,5 @@
 define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, When, FormUtil) {
-  var createStrategy, getInputStrategy, noop, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
+  var createStrategy, getInputStrategy, noop, pluginObject, pointsToArray, processInputValue, refresh, registerInput, registerInputHandler, registerInputStrategy, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
   registerTarget = function(target) {
@@ -40,6 +40,19 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
     return _.where(targetRegistrator[targetName]["strategies"], {
       name: fieldName
     })[0];
+  };
+  processInputValue = function(value, points) {
+    var point, result, _i, _len;
+    result = {};
+    for (_i = 0, _len = points.length; _i < _len; _i++) {
+      point = points[_i];
+      if (!point.rule(value)) {
+        result["errors"] = [];
+        result["errors"].push(point.message);
+        break;
+      }
+    }
+    return result;
   };
   unbindAll = function() {
     var input, inputName, targetName, targetObject, _ref, _results;
@@ -92,7 +105,7 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
     };
     wireFacetOptions = function(resolver, facet, wire) {
       return wire(facet.options).then(function(options) {
-        var fieldName, fieldPoints, input, predicate, registred, target, targetName, validateForm, validateInputValue, _ref;
+        var fieldName, fieldPoints, input, registred, target, targetName, validateForm, validateInputValue, _ref;
         target = facet.target;
         registred = registerTarget(target);
         targetName = registred.targetName;
@@ -105,19 +118,15 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
             name: fieldName,
             points: fieldPoints
           });
-          predicate = function(item, index) {
-            return console.log("predicate::::", item, index);
-          };
           validateInputValue = (function(fieldName, targetName) {
             return function(e) {
-              var promise, strategy, strategyPoints;
+              var result, strategy, strategyPoints;
               console.log(e.target.value);
               strategy = getInputStrategy(targetName, fieldName);
               strategyPoints = _.values(strategy.points);
               console.log("strategyPoints:::", strategyPoints);
-              return promise = When.filter(strategyPoints, predicate).then(function(res) {
-                return console.log("SUCCESS", res);
-              });
+              result = processInputValue(e.target.value, strategyPoints);
+              return console.log("processing res:::::", result);
             };
           })(fieldName, targetName);
           registerInputHandler(targetName, fieldName, "change", validateInputValue);
