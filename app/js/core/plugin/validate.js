@@ -1,36 +1,34 @@
-define(["underscore", "jquery", "./utils/validatePluginUtils"], function(_, $, ValidatePluginUtils) {
-  var $target, doValidate, noop;
+define(["underscore", "jquery", "./utils/colaway/bindingHandler", "./utils/colaway/form"], function(_, $, bindingHandler, FormUtil) {
+  var $target, doValidate, noop, pointsToArray;
   $target = null;
   noop = function() {};
+  pointsToArray = function(points) {
+    return _.values(points);
+  };
   doValidate = function(obj, validationFunc, structure) {
-    console.log("structure:::", structure);
     return validationFunc(structure, obj);
   };
   return function(options) {
     var validateFacet;
     validateFacet = function(resolver, facet, wire) {
       return wire(facet.options).then(function(options) {
-        var errors, extracted, pluginUtils, target, validate;
-        console.log("options", options);
+        var errors, fieldName, fieldPoints, input, target, validate, _bindingHandler, _ref;
         target = facet.target;
-        pluginUtils = new ValidatePluginUtils(target);
-        $target = pluginUtils.registerTarget(target);
-        pluginUtils.getAllInputs();
-        extracted = pluginUtils.extractStrategies(options);
-        extracted = pluginUtils.normalizeStrategyItemsArray(extracted);
-        extracted = pluginUtils.getRulesArray(extracted);
+        _bindingHandler = bindingHandler(target, options);
+        _ref = options.fields;
+        for (fieldName in _ref) {
+          fieldPoints = _ref[fieldName];
+          input = target.elements[fieldName];
+          console.log(input);
+        }
         errors = [];
         validate = function() {
-          var obj, promise;
-          obj = pluginUtils.getAllFormValues(target);
-          console.log("FORM -> OBJ:::", obj);
-          promise = pluginUtils.validate(extracted);
-          if (options.afterValidation != null) {
-            options.afterValidation(target, errors);
-          }
+          var obj;
+          obj = FormUtil.getValues(target);
+          console.log("OBJ:::", obj);
           return false;
         };
-        $target.bind("submit", validate);
+        $(target).bind("submit", validate);
         return resolver.resolve();
       });
     };
@@ -38,7 +36,6 @@ define(["underscore", "jquery", "./utils/validatePluginUtils"], function(_, $, V
       context: {
         destroy: function(resolver, wire) {
           console.log("destroyed>>>>");
-          pluginUtils.unregisterTarget();
           return resolver.resolve();
         }
       },

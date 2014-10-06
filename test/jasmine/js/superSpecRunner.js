@@ -90,6 +90,9 @@ require.config({
   shim: {
     "underscore.string": {
       deps: ["underscore"]
+    },
+    "most": {
+      exports: "most"
     }
   },
   locale: "ru",

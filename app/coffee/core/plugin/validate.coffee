@@ -1,15 +1,18 @@
 define [
     "underscore"
     "jquery"
-    "./utils/validatePluginUtils"
-], (_, $, ValidatePluginUtils) ->
+    "./utils/colaway/bindingHandler"
+    "./utils/colaway/form"
+], (_, $, bindingHandler, FormUtil) ->
 
     $target = null
 
     noop = () ->
 
+    pointsToArray = (points) ->
+        return _.values points
+
     doValidate = (obj, validationFunc, structure) ->
-        console.log "structure:::", structure
         validationFunc(structure, obj)
 
     return (options) ->
@@ -22,52 +25,35 @@ define [
         validateFacet = (resolver, facet, wire) ->
             wire(facet.options)
                 .then (options) ->
-                    console.log "options", options
 
                     target = facet.target
 
-                    pluginUtils = new ValidatePluginUtils(target)
+                    _bindingHandler = bindingHandler(target, options)
                     
-                    $target = pluginUtils.registerTarget(target)
+                    for fieldName, fieldPoints of options.fields
 
-                    pluginUtils.getAllInputs()
+                        input = target.elements[fieldName]
+                        console.log input
 
-                    
-                    extracted = pluginUtils.extractStrategies(options)
-                    extracted = pluginUtils.normalizeStrategyItemsArray extracted
-                    extracted = pluginUtils.getRulesArray extracted
 
-                    # pluginUtils.validate(extracted)
+
 
                     errors = []
 
 
                     validate = () ->
 
-                        obj = pluginUtils.getAllFormValues(target)
-
-                        console.log "FORM -> OBJ:::", obj
-
-                        promise = pluginUtils.validate(extracted)
-                        # promise.then (res) ->
-                        #     console.log "PROMISE RES:::", res
-                        # , (err) ->
-                        #     console.error "PROMISE ERROR", err
+                        obj = FormUtil.getValues(target)
+                        console.log "OBJ:::", obj
 
 
                         # doValidate(obj, pluginUtils.validate, extracted)
 
-                        if options.afterValidation?
-                            options.afterValidation(target, errors)
+                        # if options.afterValidation?
+                        #     options.afterValidation(target, errors)
                         return false
 
-                    $target.bind "submit", validate
-
-                    
-
-
-                    # console.log "extracted", extracted
-                    
+                    $(target).bind "submit", validate
 
 
                     resolver.resolve()
@@ -78,7 +64,7 @@ define [
             destroy: (resolver, wire) ->
                 console.log "destroyed>>>>"
 
-                pluginUtils.unregisterTarget()
+
                 resolver.resolve()
 
         facets: 
