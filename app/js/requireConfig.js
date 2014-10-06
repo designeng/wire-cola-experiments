@@ -26,9 +26,13 @@ require.config({
       main: "rest",
       location: "../../bower_components/rest"
     }, {
+      name: "most",
+      main: "most",
+      location: "../../bower_components/most"
+    }, {
       name: "handlebars",
-      main: "handlebars-v2.0.0",
-      location: "../../bower_components/oldHandlebars"
+      main: "handlebars",
+      location: "../../bower_components/handlebars"
     }, {
       name: "hbs",
       main: "hbs",

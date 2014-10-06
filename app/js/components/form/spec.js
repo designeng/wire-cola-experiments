@@ -12,7 +12,7 @@ define({
     }
   },
   formPattern: {
-    module: "hbs!components/form/template.html"
+    module: "hbs!components/form/template"
   },
   formViewTemplate: {
     templateSource: {
