@@ -28,12 +28,15 @@ define [
     registerTargetHandler = (targetName, event, handler) ->
         targetRegistrator[targetName]["$target"].bind "submit", handler
 
-    registerInput = (targetName, input) ->
+    registerInput = (targetName, inputName, input) ->
         # ensure it exists
         if !targetRegistrator[targetName]["inputs"]
-            targetRegistrator[targetName]["inputs"] = []
+            targetRegistrator[targetName]["inputs"] = {}
 
-        targetRegistrator[targetName]["inputs"].push input
+        targetRegistrator[targetName]["inputs"][inputName] = input
+
+    registerInputHandler = (targetName, inputName, event, handler) ->
+        targetRegistrator[targetName]["inputs"][inputName].bind event, handler
 
     registerInputStrategy = (targetName, inputStrategy) ->
         # ensure it exists
@@ -46,10 +49,9 @@ define [
         return _.where(targetRegistrator[targetName]["strategies"], {name: fieldName})[0]
 
     unbindAll = () ->
-        for targetName, targetObject in targetRegistrator
+        for targetName, targetObject of targetRegistrator
             # unbind elements
-            inputs = targetObject["inputs"]
-            for input in inputs
+            for inputName, input of targetObject["inputs"]
                 input.unbind()
             # unbind form itself
             targetObject["$target"].unbind()
@@ -104,7 +106,7 @@ define [
                         # get input 
                         input = registred["$target"].find("input[name='" + fieldName + "']")
                         # register it - it will be used on destroy phase
-                        registerInput(targetName, input)
+                        registerInput(targetName, fieldName, input)
                         # register strategy for input
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
@@ -112,7 +114,7 @@ define [
                             console.log "predicate::::", item, index
 
                         # and bind to "change" event, but fieldName must be injected
-                        input.bind "change", do (fieldName, targetName) -> 
+                        validateInputValue = do (fieldName, targetName) -> 
                             (e) ->
                                 console.log e.target.value
                                 strategy = getInputStrategy(targetName, fieldName)
@@ -124,7 +126,9 @@ define [
                                 promise = When.filter(strategyPoints, predicate).then (res) ->
                                     console.log "SUCCESS", res
 
-                    validate = do (targetName) ->
+                        registerInputHandler(targetName, fieldName, "change", validateInputValue)
+
+                    validateForm = do (targetName) ->
                         () ->
                             obj = FormUtil.getValues(target)
                             console.log "OBJ:::", obj, targetName
@@ -134,10 +138,13 @@ define [
 
                             # if options.afterValidation?
                             #     options.afterValidation(target, errors)
+
+                            
                             return false
 
-                    registerTargetHandler(targetName, "submit", validate)
+                    registerTargetHandler(targetName, "submit", validateForm)
 
+                    # experiment with refrefing options from controller
                     if options.pluginInvoker
                         options.pluginInvoker(pluginObject, target, refresh)
 
