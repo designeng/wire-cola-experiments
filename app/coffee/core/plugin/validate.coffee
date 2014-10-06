@@ -25,6 +25,9 @@ define [
             targetName: targetName
         }
 
+    registerTargetHandler = (targetName, event, handler) ->
+        targetRegistrator[targetName]["$target"].bind "submit", handler
+
     registerInput = (targetName, input) ->
         # ensure it exists
         if !targetRegistrator[targetName]["inputs"]
@@ -78,9 +81,6 @@ define [
         validationPromise = When.all(result)
         return validationPromise
 
-    doValidate = (obj, validationFunc, structure) ->
-        validationFunc(structure, obj)
-
     return (options) ->
 
         # validation should be on:
@@ -108,43 +108,38 @@ define [
                         # register strategy for input
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
-                        predicate = (value, index) ->
-                            console.log "predicate::::", value, index
+                        predicate = (item, index) ->
+                            console.log "predicate::::", item, index
 
                         # and bind to "change" event, but fieldName must be injected
-                        input.bind "change", do (fieldName, targetName) ->
+                        input.bind "change", do (fieldName, targetName) -> 
                             (e) ->
                                 console.log e.target.value
                                 strategy = getInputStrategy(targetName, fieldName)
-                                
 
                                 # Array
                                 strategyPoints = _.values(strategy.points)
+                                console.log "strategyPoints:::", strategyPoints
 
                                 promise = When.filter(strategyPoints, predicate).then (res) ->
                                     console.log "SUCCESS", res
 
+                    validate = do (targetName) ->
+                        () ->
+                            obj = FormUtil.getValues(target)
+                            console.log "OBJ:::", obj, targetName
 
-                    validate = () ->
+                            if options.pluginInvoker
+                                options.pluginInvoker(pluginObject, target, refresh)
 
-                        obj = FormUtil.getValues(target)
-                        console.log "OBJ:::", obj
+                            # if options.afterValidation?
+                            #     options.afterValidation(target, errors)
+                            return false
 
-                        if options.pluginInvoker
-                            options.pluginInvoker(pluginObject, target, refresh)
-
-
-                        # doValidate(obj, pluginUtils.validate, extracted)
-
-                        # if options.afterValidation?
-                        #     options.afterValidation(target, errors)
-                        return false
-
-                    registred["$target"].bind "submit", validate
+                    registerTargetHandler(targetName, "submit", validate)
 
                     if options.pluginInvoker
                         options.pluginInvoker(pluginObject, target, refresh)
-
 
                     resolver.resolve()
 
@@ -153,8 +148,6 @@ define [
         pluginObject = 
             context:
                 destroy: (resolver, wire) ->
-                    console.log "destroyed>>>>"
-
                     unbindAll()
                     resolver.resolve()
 
