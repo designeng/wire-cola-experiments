@@ -32,11 +32,13 @@ define [
         # ensure it exists
         if !targetRegistrator[targetName]["inputs"]
             targetRegistrator[targetName]["inputs"] = {}
+        if !targetRegistrator[targetName]["inputs"][inputName]
+            targetRegistrator[targetName]["inputs"][inputName] = {}
 
-        targetRegistrator[targetName]["inputs"][inputName] = input
+        targetRegistrator[targetName]["inputs"][inputName]["input"] = input
 
     registerInputHandler = (targetName, inputName, event, handler) ->
-        targetRegistrator[targetName]["inputs"][inputName].bind event, handler
+        targetRegistrator[targetName]["inputs"][inputName]["input"].bind event, handler
 
     normalizePoints = (points) ->
         points = _.map points, (item) ->
@@ -64,12 +66,19 @@ define [
     getInputStrategy = (targetName, fieldName) ->
         return _.where(targetRegistrator[targetName]["strategies"], {name: fieldName})[0]
 
+    registerInputValidationResult = (targetName, inputName, result) ->
+        if result.errors
+            res = 0
+        else
+            res = 1
+        targetRegistrator[targetName]["inputs"][inputName]["validationResult"] = res
+
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
             # unbind elements
             for inputName, input of targetObject["inputs"]
                 input.unbind()
-            # unbind form itself
+            # unbind form
             targetObject["$target"].unbind()
 
     noop = () ->
@@ -147,11 +156,9 @@ define [
                                             return result
 
                                 result = _.reduce(strategyPoints, iterator, {})
+                                registerInputValidationResult(targetName, fieldName, result)
 
                                 console.log "processing res:::::", result
-
-                                # promise = When.filter(strategyPoints, predicate).then (res) ->
-                                #     console.log "SUCCESS", res
 
                         registerInputHandler(targetName, fieldName, "change", validateInputValue)
 
@@ -162,11 +169,7 @@ define [
 
                             if options.pluginInvoker
                                 options.pluginInvoker(pluginObject, target, refresh)
-
-                            # if options.afterValidation?
-                            #     options.afterValidation(target, errors)
-
-                            
+                           
                             return false
 
                     registerTargetHandler(targetName, "submit", validateForm)
