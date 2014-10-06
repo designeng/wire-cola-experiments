@@ -5,21 +5,59 @@ define [
     "./utils/colaway/form"
 ], (_, $, When, FormUtil) ->
 
-    $target = null
+    pluginObject = null
 
-    inputs = []
+    targetRegistrator = {}
 
-    inputsPromises = []
+    registerTarget = (target) ->
+        $target = $(target)
+        targetName = $target.attr("name")
+
+        if !targetName
+            throw new Error "Attribute 'name' must be defined for the form!"
+
+        if !targetRegistrator[targetName]
+            targetRegistrator[targetName] = {}
+            targetRegistrator[targetName]["$target"] = $target
+
+        return {
+            $target: $target
+            targetName: targetName
+        }
+
+    registerInput = (targetName, input) ->
+        # ensure it exists
+        if !targetRegistrator[targetName]["inputs"]
+            targetRegistrator[targetName]["inputs"] = []
+
+        targetRegistrator[targetName]["inputs"].push input
+
+    registerInputStrategy = (targetName, inputStrategy) ->
+        # ensure it exists
+        if !targetRegistrator[targetName]["strategies"]
+            targetRegistrator[targetName]["strategies"] = []
+
+        targetRegistrator[targetName]["strategies"].push inputStrategy
+
+    getInputStrategy = (targetName, fieldName) ->
+        return _.where(targetRegistrator[targetName]["strategies"], {name: fieldName})[0]
 
     unbindAll = () ->
-        for input in inputs
-            input.unbind()
-        $target.unbind()
+        for targetName, targetObject in targetRegistrator
+            # unbind elements
+            inputs = targetObject["inputs"]
+            for input in inputs
+                input.unbind()
+            # unbind form itself
+            targetObject["$target"].unbind()
 
     noop = () ->
 
     pointsToArray = (points) ->
         return _.values points
+
+    refresh = (val) ->
+        console.log "refresh", val, targetRegistrator
 
     createStrategy = (array) ->
         result = []
@@ -51,34 +89,39 @@ define [
         # "keyup" - if field was validated and not valid
 
         validateFacet = (resolver, facet, wire) ->
+            wireFacetOptions(resolver, facet, wire)
+
+        wireFacetOptions = (resolver, facet, wire) ->
             wire(facet.options)
                 .then (options) ->
 
                     target = facet.target
-                    $target = $(target)
+
+                    registred = registerTarget(target)
+                    targetName = registred.targetName
                     
                     for fieldName, fieldPoints of options.fields
                         # get input 
-                        input = $target.find("input[name='" + fieldName + "']")
+                        input = registred["$target"].find("input[name='" + fieldName + "']")
                         # register it - it will be used on destroy phase
-                        inputs.push input
+                        registerInput(targetName, input)
+                        # register strategy for input
+                        registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
-                        inputValidationStrategyPromise = createStrategy(pointsToArray(fieldPoints))
-
-                        inputsPromises.push {
-                            name: fieldName
-                            promise: inputValidationStrategyPromise
-                        }
-
+                        predicate = (value, index) ->
+                            console.log "predicate::::", value, index
 
                         # and bind to "change" event, but fieldName must be injected
-                        input.bind "change", do (fieldName) ->
+                        input.bind "change", do (fieldName, targetName) ->
                             (e) ->
                                 console.log e.target.value
-                                promise = _.where(inputsPromises, {name: fieldName})
+                                strategy = getInputStrategy(targetName, fieldName)
+                                
 
-                                console.log "PROMISE:::", promise
-                                all = When.all(promise).then (res) ->
+                                # Array
+                                strategyPoints = _.values(strategy.points)
+
+                                promise = When.filter(strategyPoints, predicate).then (res) ->
                                     console.log "SUCCESS", res
 
 
@@ -87,6 +130,9 @@ define [
                         obj = FormUtil.getValues(target)
                         console.log "OBJ:::", obj
 
+                        if options.pluginInvoker
+                            options.pluginInvoker(pluginObject, target, refresh)
+
 
                         # doValidate(obj, pluginUtils.validate, extracted)
 
@@ -94,20 +140,26 @@ define [
                         #     options.afterValidation(target, errors)
                         return false
 
-                    $target.bind "submit", validate
+                    registred["$target"].bind "submit", validate
+
+                    if options.pluginInvoker
+                        options.pluginInvoker(pluginObject, target, refresh)
 
 
                     resolver.resolve()
 
 
         # return plugin object
-        context:
-            destroy: (resolver, wire) ->
-                console.log "destroyed>>>>"
+        pluginObject = 
+            context:
+                destroy: (resolver, wire) ->
+                    console.log "destroyed>>>>"
 
-                unbindAll()
-                resolver.resolve()
+                    unbindAll()
+                    resolver.resolve()
 
-        facets: 
-            validate:
-                ready: validateFacet
+            facets: 
+                validate:
+                    ready: validateFacet
+
+        return pluginObject

@@ -39,15 +39,63 @@ define
                 firstName:
                     "not longer than 10 characters":
                         rule: (value) ->
-                            if value > 10
+                            if value.length > 10
                                 return false
                             else
                                 return true
                         message: "Should not be longer than 10 characters!"
+                    "not shorter than 2 characters":
+                        rule: (value) ->
+                                if value.length < 2
+                                    return false
+                                else
+                                    return true
+                        message: "Should not be shorter than 2 characters!"
                 email:
                     "should have word '@'":
                         rule: /@/g
                         message: "Should have word '@'!"
             afterValidation: {$ref: "formController.afterValidation"}
+            pluginInvoker: {$ref: "formController.pluginInvoker"}
+
+    # another form
+    anotherFormPattern:
+        module: "hbs!components/form/anotherForm"
+
+    anotherFormViewTemplate:
+        templateSource:
+            pattern: {$ref: 'anotherFormPattern'}
+            fillWith:
+                phone: "phone"
+                address: "address"
+                save: "save data"
+                clear: "clear data"
+
+    anotherFormView:
+        render:
+            template: {$ref: 'anotherFormViewTemplate'}
+        insert:
+            at: {$ref: 'dom.first!#another_form'}
+        validate:
+            fields:
+                address:
+                    "not longer than 20 characters":
+                        rule: (value) ->
+                            if value.length > 20
+                                return false
+                            else
+                                return true
+                        message: "Should not be longer than 10 characters!"
+                    "not shorter than 15 characters":
+                        rule: (value) ->
+                                if value.length < 15
+                                    return false
+                                else
+                                    return true
+                        message: "Should not be shorter than 15 characters!"
+                phone:
+                    "should have only numbers":
+                        rule: /^\d+$/
+                        message: "Should have only numbers!"
 
 
