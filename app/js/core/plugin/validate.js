@@ -1,5 +1,5 @@
 define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, When, FormUtil) {
-  var checkTargetErrors, createStrategy, getInputStrategy, noop, normalizePoints, normalizeRule, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
+  var checkTargetErrors, getInputStrategy, noop, normalizePoints, normalizeRule, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
   registerTarget = function(target) {
@@ -104,28 +104,6 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
   };
   refresh = function(val) {
     return console.log("refresh", val, targetRegistrator);
-  };
-  createStrategy = function(array) {
-    var item, result, rulePromise, ruleWithMessage, validationPromise, _i, _len;
-    result = [];
-    for (_i = 0, _len = array.length; _i < _len; _i++) {
-      item = array[_i];
-      rulePromise = function(isValid) {
-        var promise;
-        promise = When.promise(function(resolve, reject) {
-          if (isValid) {
-            return resolve();
-          } else {
-            return reject();
-          }
-        });
-        return promise;
-      };
-      ruleWithMessage = _.compose(rulePromise, item.rule);
-      result.push(ruleWithMessage);
-    }
-    validationPromise = When.all(result);
-    return validationPromise;
   };
   return function(options) {
     var validateFacet, wireFacetOptions;

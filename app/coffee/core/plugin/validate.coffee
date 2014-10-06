@@ -101,24 +101,6 @@ define [
     refresh = (val) ->
         console.log "refresh", val, targetRegistrator
 
-    createStrategy = (array) ->
-        result = []
-        for item in array
-
-            rulePromise = (isValid) ->
-                promise = When.promise (resolve, reject) ->
-                    if isValid
-                        resolve()
-                    else
-                        reject()
-                return promise
-                                
-            ruleWithMessage = _.compose(rulePromise, item.rule)
-            result.push ruleWithMessage
-
-        validationPromise = When.all(result)
-        return validationPromise
-
     return (options) ->
 
         # validation should be on:
@@ -176,8 +158,6 @@ define [
                         registerInput(targetName, fieldName, input, inputHandler)
                         # register strategy for input
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
-
-                        
 
                         registerInputHandler(targetName, fieldName, "change", inputHandler)
 
