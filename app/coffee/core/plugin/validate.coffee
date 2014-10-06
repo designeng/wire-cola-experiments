@@ -28,7 +28,7 @@ define [
     registerTargetHandler = (targetName, event, handler) ->
         targetRegistrator[targetName]["$target"].bind "submit", handler
 
-    registerInput = (targetName, inputName, input) ->
+    registerInput = (targetName, inputName, input, inputHandler) ->
         # ensure it exists
         if !targetRegistrator[targetName]["inputs"]
             targetRegistrator[targetName]["inputs"] = {}
@@ -36,6 +36,7 @@ define [
             targetRegistrator[targetName]["inputs"][inputName] = {}
 
         targetRegistrator[targetName]["inputs"][inputName]["input"] = input
+        targetRegistrator[targetName]["inputs"][inputName]["inputHandler"] = inputHandler
 
     registerInputHandler = (targetName, inputName, event, handler) ->
         targetRegistrator[targetName]["inputs"][inputName]["input"].bind event, handler
@@ -68,11 +69,22 @@ define [
 
     registerInputValidationResult = (targetName, inputName, result) ->
         if result.errors
-            res = 0
-        else
-            res = 1
-        targetRegistrator[targetName]["inputs"][inputName]["validationResult"] = res
+            targetRegistrator[targetName]["inputs"][inputName]["errors"] = result.errors
 
+    checkTargetErrors = (targetName) ->
+        keys = _.keys targetRegistrator[targetName]["inputs"]
+        inputs = targetRegistrator[targetName]["inputs"]
+        
+        result = {}
+        for key in keys
+            input        = inputs[key]["input"]
+            inputHandler = inputs[key]["inputHandler"]
+            result = inputHandler(input.val())
+            if result.errors
+                break
+        console.log "FORM VALIDATION RESULT:::::", result
+        return false
+            
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
             # unbind elements
@@ -94,7 +106,6 @@ define [
         for item in array
 
             rulePromise = (isValid) ->
-                console.log "isValid:::", isValid
                 promise = When.promise (resolve, reject) ->
                     if isValid
                         resolve()
@@ -130,22 +141,22 @@ define [
                     for fieldName, fieldPoints of options.fields
                         # get input 
                         input = registred["$target"].find("input[name='" + fieldName + "']")
-                        # register it - it will be used on destroy phase
-                        registerInput(targetName, fieldName, input)
-                        # register strategy for input
-                        registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
-                        # and bind to "change" event, but fieldName must be injected
-                        validateInputValue = do (fieldName, targetName) -> 
+                        inputHandler = do (fieldName, targetName) -> 
                             (e) ->
-                                console.log e.target.value
+                                # nomalize value
+                                # lazy check for event in args[0]
+                                if e.target
+                                    _value = e.target.value
+                                else
+                                    _value = e
+
                                 strategy = getInputStrategy(targetName, fieldName)
 
                                 # Array
                                 strategyPoints = _.values(strategy.points)
-                                console.log "strategyPoints:::", strategyPoints
 
-                                iterator = do (value = e.target.value) ->
+                                iterator = do (value = _value) ->
                                     (result, item) ->
                                         if result.errors
                                             return result
@@ -158,17 +169,27 @@ define [
                                 result = _.reduce(strategyPoints, iterator, {})
                                 registerInputValidationResult(targetName, fieldName, result)
 
-                                console.log "processing res:::::", result
+                                console.log "input processing res:::::", result
+                                return result
 
-                        registerInputHandler(targetName, fieldName, "change", validateInputValue)
+                        # register it - it will be used on destroy phase
+                        registerInput(targetName, fieldName, input, inputHandler)
+                        # register strategy for input
+                        registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
+
+                        
+
+                        registerInputHandler(targetName, fieldName, "change", inputHandler)
 
                     validateForm = do (targetName) ->
                         () ->
-                            obj = FormUtil.getValues(target)
-                            console.log "OBJ:::", obj, targetName
+                            # obj = FormUtil.getValues(target)
+                            # console.log "OBJ:::", obj, targetName
 
-                            if options.pluginInvoker
-                                options.pluginInvoker(pluginObject, target, refresh)
+                            checkTargetErrors(targetName)
+
+                            # if options.pluginInvoker
+                            #     options.pluginInvoker(pluginObject, target, refresh)
                            
                             return false
 

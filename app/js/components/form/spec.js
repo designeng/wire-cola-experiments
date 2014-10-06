@@ -43,6 +43,16 @@ define({
     validate: {
       fields: {
         firstName: {
+          "not blank": {
+            rule: function(value) {
+              if (value === "") {
+                return false;
+              } else {
+                return true;
+              }
+            },
+            message: "FirstName should not be blank!"
+          },
           "not longer than 10 characters": {
             rule: function(value) {
               if (value.length > 10) {
@@ -108,6 +118,12 @@ define({
     },
     validate: {
       fields: {
+        phone: {
+          "should have only numbers": {
+            rule: /^\d+$/,
+            message: "Should have only numbers!"
+          }
+        },
         address: {
           "not longer than 20 characters": {
             rule: function(value) {
@@ -128,12 +144,6 @@ define({
               }
             },
             message: "Should not be shorter than 5 characters!"
-          }
-        },
-        phone: {
-          "should have only numbers": {
-            rule: /^\d+$/,
-            message: "Should have only numbers!"
           }
         }
       }

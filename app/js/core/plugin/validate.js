@@ -1,5 +1,5 @@
 define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, When, FormUtil) {
-  var createStrategy, getInputStrategy, noop, normalizePoints, normalizeRule, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
+  var checkTargetErrors, createStrategy, getInputStrategy, noop, normalizePoints, normalizeRule, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
   registerTarget = function(target) {
@@ -21,14 +21,15 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
   registerTargetHandler = function(targetName, event, handler) {
     return targetRegistrator[targetName]["$target"].bind("submit", handler);
   };
-  registerInput = function(targetName, inputName, input) {
+  registerInput = function(targetName, inputName, input, inputHandler) {
     if (!targetRegistrator[targetName]["inputs"]) {
       targetRegistrator[targetName]["inputs"] = {};
     }
     if (!targetRegistrator[targetName]["inputs"][inputName]) {
       targetRegistrator[targetName]["inputs"][inputName] = {};
     }
-    return targetRegistrator[targetName]["inputs"][inputName]["input"] = input;
+    targetRegistrator[targetName]["inputs"][inputName]["input"] = input;
+    return targetRegistrator[targetName]["inputs"][inputName]["inputHandler"] = inputHandler;
   };
   registerInputHandler = function(targetName, inputName, event, handler) {
     return targetRegistrator[targetName]["inputs"][inputName]["input"].bind(event, handler);
@@ -62,13 +63,26 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
     })[0];
   };
   registerInputValidationResult = function(targetName, inputName, result) {
-    var res;
     if (result.errors) {
-      res = 0;
-    } else {
-      res = 1;
+      return targetRegistrator[targetName]["inputs"][inputName]["errors"] = result.errors;
     }
-    return targetRegistrator[targetName]["inputs"][inputName]["validationResult"] = res;
+  };
+  checkTargetErrors = function(targetName) {
+    var input, inputHandler, inputs, key, keys, result, _i, _len;
+    keys = _.keys(targetRegistrator[targetName]["inputs"]);
+    inputs = targetRegistrator[targetName]["inputs"];
+    result = {};
+    for (_i = 0, _len = keys.length; _i < _len; _i++) {
+      key = keys[_i];
+      input = inputs[key]["input"];
+      inputHandler = inputs[key]["inputHandler"];
+      result = inputHandler(input.val());
+      if (result.errors) {
+        break;
+      }
+    }
+    console.log("FORM VALIDATION RESULT:::::", result);
+    return false;
   };
   unbindAll = function() {
     var input, inputName, targetName, targetObject, _ref, _results;
@@ -98,7 +112,6 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
       item = array[_i];
       rulePromise = function(isValid) {
         var promise;
-        console.log("isValid:::", isValid);
         promise = When.promise(function(resolve, reject) {
           if (isValid) {
             return resolve();
@@ -121,7 +134,7 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
     };
     wireFacetOptions = function(resolver, facet, wire) {
       return wire(facet.options).then(function(options) {
-        var fieldName, fieldPoints, input, registred, target, targetName, validateForm, validateInputValue, _ref;
+        var fieldName, fieldPoints, input, inputHandler, registred, target, targetName, validateForm, _ref;
         target = facet.target;
         registred = registerTarget(target);
         targetName = registred.targetName;
@@ -129,18 +142,16 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
         for (fieldName in _ref) {
           fieldPoints = _ref[fieldName];
           input = registred["$target"].find("input[name='" + fieldName + "']");
-          registerInput(targetName, fieldName, input);
-          registerInputStrategy(targetName, {
-            name: fieldName,
-            points: fieldPoints
-          });
-          validateInputValue = (function(fieldName, targetName) {
+          inputHandler = (function(fieldName, targetName) {
             return function(e) {
-              var iterator, result, strategy, strategyPoints;
-              console.log(e.target.value);
+              var iterator, result, strategy, strategyPoints, _value;
+              if (e.target) {
+                _value = e.target.value;
+              } else {
+                _value = e;
+              }
               strategy = getInputStrategy(targetName, fieldName);
               strategyPoints = _.values(strategy.points);
-              console.log("strategyPoints:::", strategyPoints);
               iterator = (function(value) {
                 return function(result, item) {
                   if (result.errors) {
@@ -153,22 +164,23 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
                     return result;
                   }
                 };
-              })(e.target.value);
+              })(_value);
               result = _.reduce(strategyPoints, iterator, {});
               registerInputValidationResult(targetName, fieldName, result);
-              return console.log("processing res:::::", result);
+              console.log("input processing res:::::", result);
+              return result;
             };
           })(fieldName, targetName);
-          registerInputHandler(targetName, fieldName, "change", validateInputValue);
+          registerInput(targetName, fieldName, input, inputHandler);
+          registerInputStrategy(targetName, {
+            name: fieldName,
+            points: fieldPoints
+          });
+          registerInputHandler(targetName, fieldName, "change", inputHandler);
         }
         validateForm = (function(targetName) {
           return function() {
-            var obj;
-            obj = FormUtil.getValues(target);
-            console.log("OBJ:::", obj, targetName);
-            if (options.pluginInvoker) {
-              options.pluginInvoker(pluginObject, target, refresh);
-            }
+            checkTargetErrors(targetName);
             return false;
           };
         })(targetName);

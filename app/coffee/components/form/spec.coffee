@@ -37,6 +37,13 @@ define
         validate:
             fields:
                 firstName:
+                    "not blank":
+                        rule: (value) ->
+                            if value == ""
+                                return false
+                            else
+                                return true
+                        message: "FirstName should not be blank!"
                     "not longer than 10 characters":
                         rule: (value) ->
                             if value.length > 10
@@ -78,6 +85,10 @@ define
             at: {$ref: 'dom.first!#another_form'}
         validate:
             fields:
+                phone:
+                    "should have only numbers":
+                        rule: /^\d+$/
+                        message: "Should have only numbers!"
                 address:
                     "not longer than 20 characters":
                         rule: (value) ->
@@ -93,9 +104,6 @@ define
                                 else
                                     return true
                         message: "Should not be shorter than 5 characters!"
-                phone:
-                    "should have only numbers":
-                        rule: /^\d+$/
-                        message: "Should have only numbers!"
+                
 
 
