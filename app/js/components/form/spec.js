@@ -41,19 +41,6 @@ define({
       }
     },
     validate: {
-      querySelector: {
-        $ref: "dom.first!"
-      },
-      bindings: {
-        firstName: [
-          {
-            selector: ".test",
-            handler: function(node, data, info) {
-              return console.log("HANDLER");
-            }
-          }
-        ]
-      },
       fields: {
         firstName: {
           "not longer than 10 characters": {

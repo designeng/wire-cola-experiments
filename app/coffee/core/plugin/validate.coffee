@@ -1,16 +1,44 @@
 define [
     "underscore"
     "jquery"
-    "./utils/colaway/bindingHandler"
+    "when"
     "./utils/colaway/form"
-], (_, $, bindingHandler, FormUtil) ->
+], (_, $, When, FormUtil) ->
 
     $target = null
+
+    inputs = []
+
+    inputsPromises = []
+
+    unbindAll = () ->
+        for input in inputs
+            input.unbind()
+        $target.unbind()
 
     noop = () ->
 
     pointsToArray = (points) ->
         return _.values points
+
+    createStrategy = (array) ->
+        result = []
+        for item in array
+
+            rulePromise = (isValid) ->
+                console.log "isValid:::", isValid
+                promise = When.promise (resolve, reject) ->
+                    if isValid
+                        resolve()
+                    else
+                        reject()
+                return promise
+                                
+            ruleWithMessage = _.compose(rulePromise, item.rule)
+            result.push ruleWithMessage
+
+        validationPromise = When.all(result)
+        return validationPromise
 
     doValidate = (obj, validationFunc, structure) ->
         validationFunc(structure, obj)
@@ -27,18 +55,31 @@ define [
                 .then (options) ->
 
                     target = facet.target
-
-                    _bindingHandler = bindingHandler(target, options)
+                    $target = $(target)
                     
                     for fieldName, fieldPoints of options.fields
+                        # get input 
+                        input = $target.find("input[name='" + fieldName + "']")
+                        # register it - it will be used on destroy phase
+                        inputs.push input
 
-                        input = target.elements[fieldName]
-                        console.log input
+                        inputValidationStrategyPromise = createStrategy(pointsToArray(fieldPoints))
+
+                        inputsPromises.push {
+                            name: fieldName
+                            promise: inputValidationStrategyPromise
+                        }
 
 
+                        # and bind to "change" event, but fieldName must be injected
+                        input.bind "change", do (fieldName) ->
+                            (e) ->
+                                console.log e.target.value
+                                promise = _.where(inputsPromises, {name: fieldName})
 
-
-                    errors = []
+                                console.log "PROMISE:::", promise
+                                all = When.all(promise).then (res) ->
+                                    console.log "SUCCESS", res
 
 
                     validate = () ->
@@ -53,7 +94,7 @@ define [
                         #     options.afterValidation(target, errors)
                         return false
 
-                    $(target).bind "submit", validate
+                    $target.bind "submit", validate
 
 
                     resolver.resolve()
@@ -64,7 +105,7 @@ define [
             destroy: (resolver, wire) ->
                 console.log "destroyed>>>>"
 
-
+                unbindAll()
                 resolver.resolve()
 
         facets: 

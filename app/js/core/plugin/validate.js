@@ -1,9 +1,42 @@
-define(["underscore", "jquery", "./utils/colaway/bindingHandler", "./utils/colaway/form"], function(_, $, bindingHandler, FormUtil) {
-  var $target, doValidate, noop, pointsToArray;
+define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, When, FormUtil) {
+  var $target, createStrategy, doValidate, inputs, inputsPromises, noop, pointsToArray, unbindAll;
   $target = null;
+  inputs = [];
+  inputsPromises = [];
+  unbindAll = function() {
+    var input, _i, _len;
+    for (_i = 0, _len = inputs.length; _i < _len; _i++) {
+      input = inputs[_i];
+      input.unbind();
+    }
+    return $target.unbind();
+  };
   noop = function() {};
   pointsToArray = function(points) {
     return _.values(points);
+  };
+  createStrategy = function(array) {
+    var item, result, rulePromise, ruleWithMessage, validationPromise, _i, _len;
+    result = [];
+    for (_i = 0, _len = array.length; _i < _len; _i++) {
+      item = array[_i];
+      rulePromise = function(isValid) {
+        var promise;
+        console.log("isValid:::", isValid);
+        promise = When.promise(function(resolve, reject) {
+          if (isValid) {
+            return resolve();
+          } else {
+            return reject();
+          }
+        });
+        return promise;
+      };
+      ruleWithMessage = _.compose(rulePromise, item.rule);
+      result.push(ruleWithMessage);
+    }
+    validationPromise = When.all(result);
+    return validationPromise;
   };
   doValidate = function(obj, validationFunc, structure) {
     return validationFunc(structure, obj);
@@ -12,23 +45,40 @@ define(["underscore", "jquery", "./utils/colaway/bindingHandler", "./utils/colaw
     var validateFacet;
     validateFacet = function(resolver, facet, wire) {
       return wire(facet.options).then(function(options) {
-        var errors, fieldName, fieldPoints, input, target, validate, _bindingHandler, _ref;
+        var fieldName, fieldPoints, input, inputValidationStrategyPromise, target, validate, _ref;
         target = facet.target;
-        _bindingHandler = bindingHandler(target, options);
+        $target = $(target);
         _ref = options.fields;
         for (fieldName in _ref) {
           fieldPoints = _ref[fieldName];
-          input = target.elements[fieldName];
-          console.log(input);
+          input = $target.find("input[name='" + fieldName + "']");
+          inputs.push(input);
+          inputValidationStrategyPromise = createStrategy(pointsToArray(fieldPoints));
+          inputsPromises.push({
+            name: fieldName,
+            promise: inputValidationStrategyPromise
+          });
+          input.bind("change", (function(fieldName) {
+            return function(e) {
+              var all, promise;
+              console.log(e.target.value);
+              promise = _.where(inputsPromises, {
+                name: fieldName
+              });
+              console.log("PROMISE:::", promise);
+              return all = When.all(promise).then(function(res) {
+                return console.log("SUCCESS", res);
+              });
+            };
+          })(fieldName));
         }
-        errors = [];
         validate = function() {
           var obj;
           obj = FormUtil.getValues(target);
           console.log("OBJ:::", obj);
           return false;
         };
-        $(target).bind("submit", validate);
+        $target.bind("submit", validate);
         return resolver.resolve();
       });
     };
@@ -36,6 +86,7 @@ define(["underscore", "jquery", "./utils/colaway/bindingHandler", "./utils/colaw
       context: {
         destroy: function(resolver, wire) {
           console.log("destroyed>>>>");
+          unbindAll();
           return resolver.resolve();
         }
       },

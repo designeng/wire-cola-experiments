@@ -35,15 +35,6 @@ define
         insert:
             at: {$ref: 'slot'}
         validate:
-            querySelector: {$ref: "dom.first!"}
-            bindings:
-                firstName: [
-                    {
-                        selector: ".test"
-                        handler: (node, data, info) ->
-                            console.log "HANDLER"
-                    }
-                ]
             fields:
                 firstName:
                     "not longer than 10 characters":
