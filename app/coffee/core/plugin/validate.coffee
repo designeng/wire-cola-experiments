@@ -2,8 +2,8 @@ define [
     "underscore"
     "jquery"
     "when"
-    "./utils/colaway/form"
-], (_, $, When, FormUtil) ->
+    "meld"
+], (_, $, When, meld) ->
 
     pluginObject = null
 
@@ -99,8 +99,6 @@ define [
             # unbind form
             targetObject["$target"].unbind()
 
-    noop = () ->
-
     pointsToArray = (points) ->
         return _.values points
 
@@ -151,8 +149,6 @@ define [
                         inputHandler = do (fieldName, targetName) -> 
                             (e) ->
                                 value = normalizeValue(e)
-
-                                # inputValidation
 
                                 strategy = getInputStrategy(targetName, fieldName)
 

@@ -1,5 +1,5 @@
-define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, When, FormUtil) {
-  var checkTargetErrors, getInputStrategy, noop, normalizePoints, normalizeRule, normalizeValue, pluginObject, pointsToArray, refresh, registerAfterValidationCallback, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
+define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
+  var checkTargetErrors, getInputStrategy, normalizePoints, normalizeRule, normalizeValue, pluginObject, pointsToArray, refresh, registerAfterValidationCallback, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
   registerTarget = function(target) {
@@ -102,7 +102,6 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
     }
     return _results;
   };
-  noop = function() {};
   pointsToArray = function(points) {
     return _.values(points);
   };
