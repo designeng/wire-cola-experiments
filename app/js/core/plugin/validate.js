@@ -132,11 +132,8 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
     return console.log("refresh", val, targetRegistrator);
   };
   return function(options) {
-    var validateFacet, wireFacetOptions;
+    var validateFacet;
     validateFacet = function(resolver, facet, wire) {
-      return wireFacetOptions(resolver, facet, wire);
-    };
-    wireFacetOptions = function(resolver, facet, wire) {
       return wire(facet.options).then(function(options) {
         var fieldName, fieldPoints, input, inputHandler, registred, target, targetName, validateFormHandler, _ref;
         target = facet.target;
@@ -148,7 +145,7 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
             return false;
           };
         })(targetName);
-        registerTargetHandler(targetName, "submit", validateFormHandler);
+        registerTargetHandler(targetName, "submit", validateFormHandler, options.afterValidation);
         _ref = options.fields;
         for (fieldName in _ref) {
           fieldPoints = _ref[fieldName];
@@ -174,6 +171,9 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
               })(value);
               result = _.reduce(strategyPoints, iterator, {});
               registerInputValidationResult(targetName, fieldName, result);
+              if (options.afterValidation) {
+                options.afterValidation(target, result);
+              }
               console.log("input processing res:::::", result);
               return result;
             };

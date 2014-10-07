@@ -132,9 +132,6 @@ define [
         # "keyup" - if field was validated and not valid
 
         validateFacet = (resolver, facet, wire) ->
-            wireFacetOptions(resolver, facet, wire)
-
-        wireFacetOptions = (resolver, facet, wire) ->
             wire(facet.options)
                 .then (options) ->
 
@@ -148,7 +145,7 @@ define [
                             checkTargetErrors(targetName)
                             return false
 
-                    registerTargetHandler(targetName, "submit", validateFormHandler)
+                    registerTargetHandler(targetName, "submit", validateFormHandler, options.afterValidation)
                     
                     for fieldName, fieldPoints of options.fields
                         # get input 
@@ -175,6 +172,9 @@ define [
 
                                 result = _.reduce(strategyPoints, iterator, {})
                                 registerInputValidationResult(targetName, fieldName, result)
+
+                                if options.afterValidation
+                                    options.afterValidation(target, result)
 
                                 console.log "input processing res:::::", result
                                 return result
