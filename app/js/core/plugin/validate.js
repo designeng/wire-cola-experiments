@@ -1,8 +1,7 @@
-define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
-  var checkTargetErrors, getInputStrategy, normalizePoints, normalizeRule, normalizeValue, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, removers, targetRegistrator, unbindAll;
+define(["underscore", "jquery", "when"], function(_, $, When) {
+  var checkTargetErrors, getInputStrategy, normalizePoints, normalizeRule, normalizeValue, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
-  removers = [];
   registerTarget = function(target) {
     var $target, targetName;
     $target = $(target);
@@ -91,14 +90,14 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
     }
   };
   unbindAll = function() {
-    var iname, iobj, targetName, targetObject, _ref, _results;
+    var inputName, inputObj, targetName, targetObject, _ref, _results;
     _results = [];
     for (targetName in targetRegistrator) {
       targetObject = targetRegistrator[targetName];
       _ref = targetObject["inputs"];
-      for (iname in _ref) {
-        iobj = _ref[iname];
-        iobj["input"].unbind();
+      for (inputName in _ref) {
+        inputObj = _ref[inputName];
+        inputObj["input"].unbind();
       }
       _results.push(targetObject["$target"].unbind());
     }
@@ -159,8 +158,8 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
               })(value);
               result = _.reduce(strategyPoints, iterator, {});
               registerInputValidationResult(targetName, fieldName, result);
-              if (options.afterValidation) {
-                options.afterValidation(target, fieldName, result);
+              if (options.afterFieldValidation) {
+                options.afterFieldValidation(target, fieldName, result);
               }
               console.log("input processing res:::::", result);
               return result;

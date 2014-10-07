@@ -81,8 +81,8 @@ define({
           }
         }
       },
-      afterValidation: {
-        $ref: "formController.afterValidation"
+      afterFieldValidation: {
+        $ref: "formController.afterFieldValidation"
       },
       onValidationComplete: {
         $ref: "formController.onValidationComplete"

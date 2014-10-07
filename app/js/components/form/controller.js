@@ -4,7 +4,7 @@ define(["underscore"], function(_) {
   var FormController;
   return FormController = (function() {
     function FormController() {
-      this.afterValidation = __bind(this.afterValidation, this);
+      this.afterFieldValidation = __bind(this.afterFieldValidation, this);
     }
 
     FormController.prototype.testProp = "testProp";
@@ -15,8 +15,8 @@ define(["underscore"], function(_) {
       return console.log("onValidationComplete::::::::", target, formResult);
     };
 
-    FormController.prototype.afterValidation = function(target, fieldName, result) {
-      console.log("afterValidation::::", target, fieldName, result);
+    FormController.prototype.afterFieldValidation = function(target, fieldName, result) {
+      console.log("afterFieldValidation::::", target, fieldName, result);
       return console.log("prop::::", this.testProp);
     };
 

@@ -13,9 +13,9 @@ define [
             console.log "onValidationComplete::::::::", target, formResult
             
 
-        afterValidation: (target, fieldName, result) =>
+        afterFieldValidation: (target, fieldName, result) =>
 
-            console.log "afterValidation::::", target, fieldName, result
+            console.log "afterFieldValidation::::", target, fieldName, result
             console.log "prop::::", @testProp
 
         pluginInvoker: (plugin, target, callback) ->

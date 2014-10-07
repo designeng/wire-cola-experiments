@@ -2,14 +2,11 @@ define [
     "underscore"
     "jquery"
     "when"
-    "meld"
-], (_, $, When, meld) ->
+], (_, $, When) ->
 
     pluginObject = null
 
     targetRegistrator = {}
-
-    removers = []
 
     registerTarget = (target) ->
         $target = $(target)
@@ -87,7 +84,7 @@ define [
             result = inputHandler(value)
             formResult[key] = value
 
-            # should be checked just to first input error 
+            # form should be checked just to first input error 
             if result.errors
                 break
 
@@ -99,8 +96,8 @@ define [
         for targetName, targetObject of targetRegistrator
             # unbind elements
 
-            for iname, iobj of targetObject["inputs"]
-                iobj["input"].unbind()
+            for inputName, inputObj of targetObject["inputs"]
+                inputObj["input"].unbind()
 
             # unbind form
             targetObject["$target"].unbind()
@@ -135,7 +132,7 @@ define [
                     registred = registerTarget(target)
                     targetName = registred.targetName
 
-                    # options.afterValidation - will be alled when validation is complete?
+                    # options.afterFieldValidation - will be alled when validation is complete?
                     # or every time?
 
                     validateFormHandler = do (targetName) ->
@@ -171,9 +168,9 @@ define [
                                 result = _.reduce(strategyPoints, iterator, {})
                                 registerInputValidationResult(targetName, fieldName, result)
 
-                                # TODO: here must be displayErrors, not afterValidation
-                                if options.afterValidation
-                                    options.afterValidation(target, fieldName, result)
+                                # TODO: here must be displayErrors, not afterFieldValidation
+                                if options.afterFieldValidation
+                                    options.afterFieldValidation(target, fieldName, result)
 
                                 console.log "input processing res:::::", result
                                 return result

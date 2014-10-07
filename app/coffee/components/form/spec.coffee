@@ -62,7 +62,7 @@ define
                     "should have word '@'":
                         rule: /@/g
                         message: "Should have word '@'!"
-            afterValidation: {$ref: "formController.afterValidation"}
+            afterFieldValidation: {$ref: "formController.afterFieldValidation"}
             onValidationComplete: {$ref: "formController.onValidationComplete"}
             pluginInvoker: {$ref: "formController.pluginInvoker"}
 
