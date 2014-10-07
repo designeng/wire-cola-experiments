@@ -11,8 +11,8 @@ define(["underscore"], function(_) {
 
     FormController.prototype.onReady = function() {};
 
-    FormController.prototype.afterValidation = function(target, errors) {
-      console.log("afterValidation::::", target, errors);
+    FormController.prototype.afterValidation = function(target, result) {
+      console.log("afterValidation::::", target, result);
       return console.log("prop::::", this.testProp);
     };
 

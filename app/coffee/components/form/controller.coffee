@@ -10,9 +10,9 @@ define [
         onReady: ->
             
 
-        afterValidation: (target, errors) =>
+        afterValidation: (target, result) =>
 
-            console.log "afterValidation::::", target, errors
+            console.log "afterValidation::::", target, result
             console.log "prop::::", @testProp
 
         pluginInvoker: (plugin, target, callback) ->
