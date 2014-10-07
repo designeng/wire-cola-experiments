@@ -44,18 +44,6 @@ define [
     registerInputHandler = (targetName, inputName, event, handler) ->
         targetRegistrator[targetName]["inputs"][inputName]["input"].bind event, handler
         
-
-    registerAfterValidationCallback = (targetName, callback) ->
-        targetRegistrator[targetName]["after"] = callback
-
-        targeted = do (target = targetRegistrator[targetName]["$target"]) ->
-            return (result) ->
-                callback(target, result)
-
-        keys = _.keys targetRegistrator[targetName]["inputs"]
-        for key in keys
-            removers.push meld.after(targetRegistrator[targetName]["inputs"][key], "inputHandler", targeted)
-
     normalizePoints = (points) ->
         points = _.map points, (item) ->
             item.rule = normalizeRule(item.rule)
@@ -184,11 +172,7 @@ define [
                         # register strategy for input
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
-                        registerInputHandler(targetName, fieldName, "change", inputHandler)
-
-                    if options.afterValidation
-                        registerAfterValidationCallback(targetName, options.afterValidation)
-                    
+                        registerInputHandler(targetName, fieldName, "change", inputHandler)                
 
                     # experiment with refrefing options from controller
                     if options.pluginInvoker

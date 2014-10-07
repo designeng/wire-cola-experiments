@@ -1,5 +1,5 @@
 define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
-  var checkTargetErrors, getInputStrategy, normalizePoints, normalizeRule, normalizeValue, pluginObject, pointsToArray, refresh, registerAfterValidationCallback, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, removers, targetRegistrator, unbindAll;
+  var checkTargetErrors, getInputStrategy, normalizePoints, normalizeRule, normalizeValue, pluginObject, pointsToArray, refresh, registerInput, registerInputHandler, registerInputStrategy, registerInputValidationResult, registerTarget, registerTargetHandler, removers, targetRegistrator, unbindAll;
   pluginObject = null;
   targetRegistrator = {};
   removers = [];
@@ -35,22 +35,6 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
   };
   registerInputHandler = function(targetName, inputName, event, handler) {
     return targetRegistrator[targetName]["inputs"][inputName]["input"].bind(event, handler);
-  };
-  registerAfterValidationCallback = function(targetName, callback) {
-    var key, keys, targeted, _i, _len, _results;
-    targetRegistrator[targetName]["after"] = callback;
-    targeted = (function(target) {
-      return function(result) {
-        return callback(target, result);
-      };
-    })(targetRegistrator[targetName]["$target"]);
-    keys = _.keys(targetRegistrator[targetName]["inputs"]);
-    _results = [];
-    for (_i = 0, _len = keys.length; _i < _len; _i++) {
-      key = keys[_i];
-      _results.push(removers.push(meld.after(targetRegistrator[targetName]["inputs"][key], "inputHandler", targeted)));
-    }
-    return _results;
   };
   normalizePoints = function(points) {
     points = _.map(points, function(item) {
@@ -184,9 +168,6 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
             points: fieldPoints
           });
           registerInputHandler(targetName, fieldName, "change", inputHandler);
-        }
-        if (options.afterValidation) {
-          registerAfterValidationCallback(targetName, options.afterValidation);
         }
         if (options.pluginInvoker) {
           options.pluginInvoker(pluginObject, target, refresh);
