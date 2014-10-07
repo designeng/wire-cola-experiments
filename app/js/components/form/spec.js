@@ -122,6 +122,16 @@ define({
           "should have only numbers": {
             rule: /^\d+$/,
             message: "Should have only numbers!"
+          },
+          "should not be longer than 8": {
+            rule: function(value) {
+              if (value.length > 5) {
+                return false;
+              } else {
+                return true;
+              }
+            },
+            message: "Should not be longer than 8!"
           }
         },
         address: {

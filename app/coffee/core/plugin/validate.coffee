@@ -26,7 +26,8 @@ define [
         }
 
     registerTargetHandler = (targetName, event, handler) ->
-        targetRegistrator[targetName]["$target"].bind "submit", handler
+        targetRegistrator[targetName]["targetHandler"] = handler
+        targetRegistrator[targetName]["$target"].bind event, handler
 
     registerInput = (targetName, inputName, input, inputHandler) ->
         # ensure it exists
@@ -40,6 +41,9 @@ define [
 
     registerInputHandler = (targetName, inputName, event, handler) ->
         targetRegistrator[targetName]["inputs"][inputName]["input"].bind event, handler
+
+    registerAfterValidationCallback = (targetName, callback) ->
+        targetRegistrator[targetName]["after"] = callback
 
     normalizePoints = (points) ->
         points = _.map points, (item) ->
@@ -83,7 +87,7 @@ define [
             if result.errors
                 break
         console.log "FORM VALIDATION RESULT:::::", result
-        return false
+        return result
             
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
@@ -99,6 +103,14 @@ define [
 
     pointsToArray = (points) ->
         return _.values points
+
+    normalizeValue = (e) ->
+        # lazy check for event type in args[0]
+        if e.target and e.originalEvent
+            value = e.target.value
+        else
+            value = e
+        return value
 
     refresh = (val) ->
         console.log "refresh", val, targetRegistrator
@@ -121,6 +133,16 @@ define [
 
                     registred = registerTarget(target)
                     targetName = registred.targetName
+
+                    validateFormHandler = do (targetName) ->
+                        () ->
+                            checkTargetErrors(targetName)
+                            return false
+
+                    if options.afterValidation
+                        registerAfterValidationCallback(targetName, options.afterValidation)
+
+                    registerTargetHandler(targetName, "submit", validateFormHandler)
                     
                     for fieldName, fieldPoints of options.fields
                         # get input 
@@ -128,19 +150,16 @@ define [
 
                         inputHandler = do (fieldName, targetName) -> 
                             (e) ->
-                                # nomalize value
-                                # lazy check for event in args[0]
-                                if e.target
-                                    _value = e.target.value
-                                else
-                                    _value = e
+                                value = normalizeValue(e)
+
+                                # inputValidation
 
                                 strategy = getInputStrategy(targetName, fieldName)
 
                                 # Array
                                 strategyPoints = _.values(strategy.points)
 
-                                iterator = do (value = _value) ->
+                                iterator = do (value) ->
                                     (result, item) ->
                                         if result.errors
                                             return result
@@ -153,7 +172,7 @@ define [
                                 result = _.reduce(strategyPoints, iterator, {})
                                 registerInputValidationResult(targetName, fieldName, result)
 
-                                console.log "input processing res:::::", result
+                                # console.log "input processing res:::::", result
                                 return result
 
                         # register it - it will be used on destroy phase
@@ -162,22 +181,7 @@ define [
                         registerInputStrategy(targetName, {name: fieldName, points: fieldPoints})
 
                         registerInputHandler(targetName, fieldName, "change", inputHandler)
-
-                    validateForm = do (targetName) ->
-                        () ->
-                            # obj = FormUtil.getValues(target)
-                            # console.log "OBJ:::", obj, targetName
-
-                            unbindAll()
-
-                            # checkTargetErrors(targetName)
-
-                            # if options.pluginInvoker
-                            #     options.pluginInvoker(pluginObject, target, refresh)
-                           
-                            return false
-
-                    registerTargetHandler(targetName, "submit", validateForm)
+                    
 
                     # experiment with refrefing options from controller
                     if options.pluginInvoker
