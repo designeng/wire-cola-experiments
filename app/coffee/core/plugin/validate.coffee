@@ -74,19 +74,26 @@ define [
         if result.errors
             targetRegistrator[targetName]["inputs"][inputName]["errors"] = result.errors
 
-    checkTargetErrors = (targetName) ->
+    checkTargetErrors = (targetName, callback) ->
         keys = _.keys targetRegistrator[targetName]["inputs"]
         inputs = targetRegistrator[targetName]["inputs"]
         
         result = {}
+        formResult = {}
         for key in keys
             input        = inputs[key]["input"]
             inputHandler = inputs[key]["inputHandler"]
-            result = inputHandler(input.val())
+            value = input.val()
+            result = inputHandler(value)
+            formResult[key] = value
+
+            # should be checked just to first input error 
             if result.errors
                 break
-        console.log "FORM VALIDATION RESULT:::::", result
-        return result
+
+        # if form validation success
+        if !result.errors
+            callback(targetRegistrator[targetName]['$target'], formResult)
             
     unbindAll = () ->
         for targetName, targetObject of targetRegistrator
@@ -128,12 +135,15 @@ define [
                     registred = registerTarget(target)
                     targetName = registred.targetName
 
+                    # options.afterValidation - will be alled when validation is complete?
+                    # or every time?
+
                     validateFormHandler = do (targetName) ->
                         () ->
-                            checkTargetErrors(targetName)
+                            checkTargetErrors(targetName, options.onValidationComplete)
                             return false
 
-                    registerTargetHandler(targetName, "submit", validateFormHandler, options.afterValidation)
+                    registerTargetHandler(targetName, "submit", validateFormHandler,)
                     
                     for fieldName, fieldPoints of options.fields
                         # get input 
@@ -161,8 +171,9 @@ define [
                                 result = _.reduce(strategyPoints, iterator, {})
                                 registerInputValidationResult(targetName, fieldName, result)
 
+                                # TODO: here must be displayErrors, not afterValidation
                                 if options.afterValidation
-                                    options.afterValidation(target, result)
+                                    options.afterValidation(target, fieldName, result)
 
                                 console.log "input processing res:::::", result
                                 return result

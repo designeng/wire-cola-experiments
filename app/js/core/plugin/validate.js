@@ -69,22 +69,26 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
       return targetRegistrator[targetName]["inputs"][inputName]["errors"] = result.errors;
     }
   };
-  checkTargetErrors = function(targetName) {
-    var input, inputHandler, inputs, key, keys, result, _i, _len;
+  checkTargetErrors = function(targetName, callback) {
+    var formResult, input, inputHandler, inputs, key, keys, result, value, _i, _len;
     keys = _.keys(targetRegistrator[targetName]["inputs"]);
     inputs = targetRegistrator[targetName]["inputs"];
     result = {};
+    formResult = {};
     for (_i = 0, _len = keys.length; _i < _len; _i++) {
       key = keys[_i];
       input = inputs[key]["input"];
       inputHandler = inputs[key]["inputHandler"];
-      result = inputHandler(input.val());
+      value = input.val();
+      result = inputHandler(value);
+      formResult[key] = value;
       if (result.errors) {
         break;
       }
     }
-    console.log("FORM VALIDATION RESULT:::::", result);
-    return result;
+    if (!result.errors) {
+      return callback(targetRegistrator[targetName]['$target'], formResult);
+    }
   };
   unbindAll = function() {
     var iname, iobj, targetName, targetObject, _ref, _results;
@@ -125,11 +129,11 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
         targetName = registred.targetName;
         validateFormHandler = (function(targetName) {
           return function() {
-            checkTargetErrors(targetName);
+            checkTargetErrors(targetName, options.onValidationComplete);
             return false;
           };
         })(targetName);
-        registerTargetHandler(targetName, "submit", validateFormHandler, options.afterValidation);
+        registerTargetHandler(targetName, "submit", validateFormHandler);
         _ref = options.fields;
         for (fieldName in _ref) {
           fieldPoints = _ref[fieldName];
@@ -156,7 +160,7 @@ define(["underscore", "jquery", "when", "meld"], function(_, $, When, meld) {
               result = _.reduce(strategyPoints, iterator, {});
               registerInputValidationResult(targetName, fieldName, result);
               if (options.afterValidation) {
-                options.afterValidation(target, result);
+                options.afterValidation(target, fieldName, result);
               }
               console.log("input processing res:::::", result);
               return result;

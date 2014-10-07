@@ -84,6 +84,9 @@ define({
       afterValidation: {
         $ref: "formController.afterValidation"
       },
+      onValidationComplete: {
+        $ref: "formController.onValidationComplete"
+      },
       pluginInvoker: {
         $ref: "formController.pluginInvoker"
       }
