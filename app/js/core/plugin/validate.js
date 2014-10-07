@@ -85,14 +85,14 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
     return false;
   };
   unbindAll = function() {
-    var input, inputName, targetName, targetObject, _ref, _results;
+    var iname, iobj, targetName, targetObject, _ref, _results;
     _results = [];
     for (targetName in targetRegistrator) {
       targetObject = targetRegistrator[targetName];
       _ref = targetObject["inputs"];
-      for (inputName in _ref) {
-        input = _ref[inputName];
-        input.unbind();
+      for (iname in _ref) {
+        iobj = _ref[iname];
+        iobj["input"].unbind();
       }
       _results.push(targetObject["$target"].unbind());
     }
@@ -158,7 +158,7 @@ define(["underscore", "jquery", "when", "./utils/colaway/form"], function(_, $, 
         }
         validateForm = (function(targetName) {
           return function() {
-            checkTargetErrors(targetName);
+            unbindAll();
             return false;
           };
         })(targetName);

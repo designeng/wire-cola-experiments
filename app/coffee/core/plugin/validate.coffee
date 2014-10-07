@@ -89,11 +89,9 @@ define [
         for targetName, targetObject of targetRegistrator
             # unbind elements
 
-            # TODO: fix - structure was changed
-            # keys = _.keys targetObject["inputs"]
+            for iname, iobj of targetObject["inputs"]
+                iobj["input"].unbind()
 
-            for inputName, input of targetObject["inputs"]
-                input.unbind()
             # unbind form
             targetObject["$target"].unbind()
 
@@ -170,7 +168,9 @@ define [
                             # obj = FormUtil.getValues(target)
                             # console.log "OBJ:::", obj, targetName
 
-                            checkTargetErrors(targetName)
+                            unbindAll()
+
+                            # checkTargetErrors(targetName)
 
                             # if options.pluginInvoker
                             #     options.pluginInvoker(pluginObject, target, refresh)
