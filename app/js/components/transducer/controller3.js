@@ -66,6 +66,22 @@ define(["underscore", "when"], function(_, When) {
       return doValidate(10, points, successHandler, errorHandler);
     };
 
+    Controller.prototype.testRegExp = function() {
+      var item, matched, regexp, str, _i, _len, _results;
+      regexp = /^([\da-zA-Z]{6})|(\d{3}\-?\d{3}\-?\d{3}\-?)$/g;
+      str = "abc1AB";
+      matched = regexp.exec(str);
+      console.log(matched, matched.length);
+      if (matched) {
+        _results = [];
+        for (_i = 0, _len = matched.length; _i < _len; _i++) {
+          item = matched[_i];
+          _results.push(console.log(item));
+        }
+        return _results;
+      }
+    };
+
     return Controller;
 
   })();

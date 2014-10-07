@@ -140,7 +140,7 @@ define [
                             checkTargetErrors(targetName, options.onValidationComplete)
                             return false
 
-                    registerTargetHandler(targetName, "submit", validateFormHandler,)
+                    registerTargetHandler(targetName, "submit", validateFormHandler)
                     
                     for fieldName, fieldPoints of options.fields
                         # get input 

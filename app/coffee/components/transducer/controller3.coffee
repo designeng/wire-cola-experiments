@@ -54,3 +54,18 @@ define [
                 console.log "errorHandler::::", message
 
             doValidate(10, points, successHandler, errorHandler)
+
+
+        testRegExp: ->
+            regexp = /^([\da-zA-Z]{6})|(\d{3}\-?\d{3}\-?\d{3}\-?)$/g
+
+            # regexp = /^(([a-zA-Z0-9]{5,})|(\d{3}\-?\d{3}\-?\d{3}\-?))$/
+
+            str = "abc1AB"
+
+            matched = regexp.exec str
+            console.log matched, matched.length
+
+            if matched
+                for item in matched
+                    console.log item
