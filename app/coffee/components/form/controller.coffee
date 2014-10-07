@@ -1,6 +1,5 @@
 define [
     "underscore"
-    # "most"
 ], (_) ->
 
     class FormController

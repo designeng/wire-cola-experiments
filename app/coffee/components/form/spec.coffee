@@ -1,6 +1,6 @@
 define
     $plugins:[
-        "wire/debug"
+        # "wire/debug"
         "wire/dom"
         "wire/dom/render"
         "wire/on"
@@ -23,11 +23,26 @@ define
             pattern: {$ref: 'formPattern'}
             fillWith:
                 firstName: "firstName"
-                lastName: "lastName"
-                phone: "phone"
                 email: "email"
                 save: "save"
                 clear: "clear"
+
+    formFields:
+        firstName:
+            "firstNameRule":
+                rule: /^[a-zA-Zа-яА-ЯёЁ]+[a-zA-Zа-яА-ЯёЁ\-]*$/g
+                message: "Это поле может содержать только русские и английские буквы, дефис и пробел"
+        cpid:
+            "cpidRule":
+                rule: /^(([\da-zA-Z]{6})|(\d{3}\-?\d{3}\-?\d{3}\-?))$/g
+                message: [
+                    "Минимальное количество символов в этом поле: 6"
+                    "Номер заказа может включать только цифры, английские буквы и дефис"
+                ]
+        secretCode:
+            "secretCodeRule":
+                rule: /^\d{6}$/g
+                message: "Код состоит из 6 цифр"
 
     formView:
         render:
@@ -35,83 +50,12 @@ define
         insert:
             at: {$ref: 'slot'}
         validate:
-            fields:
-                firstName:
-                    "not blank":
-                        rule: (value) ->
-                            if value == ""
-                                return false
-                            else
-                                return true
-                        message: "FirstName should not be blank!"
-                    "not longer than 10 characters":
-                        rule: (value) ->
-                            if value.length > 10
-                                return false
-                            else
-                                return true
-                        message: "Should not be longer than 10 characters!"
-                    "not shorter than 2 characters":
-                        rule: (value) ->
-                                if value.length < 2
-                                    return false
-                                else
-                                    return true
-                        message: "Should not be shorter than 2 characters!"
-                email:
-                    "should have word '@'":
-                        rule: /@/g
-                        message: "Should have word '@'!"
+            fields: {$ref: 'formFields'}
             afterFieldValidation: {$ref: "formController.afterFieldValidation"}
             onValidationComplete: {$ref: "formController.onValidationComplete"}
-            pluginInvoker: {$ref: "formController.pluginInvoker"}
 
-    # another form
-    anotherFormPattern:
-        module: "hbs!components/form/anotherForm"
-
-    anotherFormViewTemplate:
-        templateSource:
-            pattern: {$ref: 'anotherFormPattern'}
-            fillWith:
-                phone: "phone"
-                address: "address"
-                save: "save data"
-                clear: "clear data"
-
-    anotherFormView:
-        render:
-            template: {$ref: 'anotherFormViewTemplate'}
-        insert:
-            at: {$ref: 'dom.first!#another_form'}
-        validate:
-            fields:
-                phone:
-                    "should have only numbers":
-                        rule: /^\d+$/
-                        message: "Should have only numbers!"
-                    "should not be longer than 8":
-                        rule: (value) ->
-                            if value.length > 5
-                                return false
-                            else
-                                return true
-                        message: "Should not be longer than 8!"
-                address:
-                    "not longer than 20 characters":
-                        rule: (value) ->
-                            if value.length > 20
-                                return false
-                            else
-                                return true
-                        message: "Should not be longer than 10 characters!"
-                    "not shorter than 5 characters":
-                        rule: (value) ->
-                                if value.length < 5
-                                    return false
-                                else
-                                    return true
-                        message: "Should not be shorter than 5 characters!"
-                
-
-
+    validator:
+        wire:
+            spec: "components/form/validator/spec"
+            provide:
+                form: {$ref: 'formView'}

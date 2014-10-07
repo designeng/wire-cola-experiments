@@ -85,6 +85,14 @@ require.config({
       name: "domReady",
       main: "domReady",
       location: "../../bower_components/requirejs-domready"
+    }, {
+      name: "kefir",
+      main: "kefir",
+      location: "../../bower_components/kefir/dist"
+    }, {
+      name: "kefirJquery",
+      main: "kefir-jquery",
+      location: "../../bower_components/kefir/dist/addons"
     }
   ],
   shim: {
