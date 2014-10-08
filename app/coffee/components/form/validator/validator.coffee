@@ -18,8 +18,6 @@ define [
 				fieldPoints = @stuffFieldPointsWithDefault(fieldPoints)
 				@parsedStrategy[fieldName] = @normalizePoints(fieldPoints)
 
-			console.log "parsedStrategy::::::::", @parsedStrategy
-
 		validate: (fieldName, value) ->
 			value = $.trim(value)
 
@@ -35,8 +33,6 @@ define [
 					return result
 
 			result = _.reduce(points, iterator, {})
-
-			console.log "result::::: for ", fieldName , "---", result
 
 			return result
 

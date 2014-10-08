@@ -26,8 +26,9 @@ define [
 
                 doValidate = do (name) =>
                     return (value) =>
-                        console.log "VALUE:::", value
-                        @validator.validate(name, value)
+                        if value
+                            result = @validator.validate(name, value)
+                            console.log "VALIDATION RESULT:::", name, result
 
 
                 @fieldPropety(field, "change").onValue doValidate

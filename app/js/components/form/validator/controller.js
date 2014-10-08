@@ -19,8 +19,11 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
         name = zip[0], field = zip[1];
         doValidate = (function(name) {
           return function(value) {
-            console.log("VALUE:::", value);
-            return _this.validator.validate(name, value);
+            var result;
+            if (value) {
+              result = _this.validator.validate(name, value);
+              return console.log("VALIDATION RESULT:::", name, result);
+            }
           };
         })(name);
         this.fieldPropety(field, "change").onValue(doValidate);

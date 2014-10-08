@@ -17,14 +17,15 @@ define(["underscore", "jquery", "when"], function(_, $, When) {
     };
 
     Validator.prototype.parseStrategy = function() {
-      var fieldName, fieldPoints, _ref;
+      var fieldName, fieldPoints, _ref, _results;
       _ref = this.strategy;
+      _results = [];
       for (fieldName in _ref) {
         fieldPoints = _ref[fieldName];
         fieldPoints = this.stuffFieldPointsWithDefault(fieldPoints);
-        this.parsedStrategy[fieldName] = this.normalizePoints(fieldPoints);
+        _results.push(this.parsedStrategy[fieldName] = this.normalizePoints(fieldPoints));
       }
-      return console.log("parsedStrategy::::::::", this.parsedStrategy);
+      return _results;
     };
 
     Validator.prototype.validate = function(fieldName, value) {
@@ -43,7 +44,6 @@ define(["underscore", "jquery", "when"], function(_, $, When) {
         }
       };
       result = _.reduce(points, iterator, {});
-      console.log("result::::: for ", fieldName, "---", result);
       return result;
     };
 
