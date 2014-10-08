@@ -15,7 +15,7 @@ define(["underscore", "when", "wire", "components/form/validator/spec"], functio
                 spec: defaultValidator,
                 provide: {
                   form: target,
-                  strategy: options.fields,
+                  strategy: options.strategy,
                   slot: options.displaySlot
                 }
               }

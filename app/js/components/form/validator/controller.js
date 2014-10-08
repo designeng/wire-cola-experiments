@@ -6,7 +6,7 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
     Controller.prototype.$form = null;
 
     Controller.prototype.onReady = function() {
-      var field, fields, name, names, zip, zippedFields, _i, _len, _results,
+      var doValidate, field, fields, name, names, zip, zippedFields, _i, _len, _results,
         _this = this;
       _.bindAll(this, "getStoredError");
       this.$form = $(this.form);
@@ -17,9 +17,13 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
       for (_i = 0, _len = zippedFields.length; _i < _len; _i++) {
         zip = zippedFields[_i];
         name = zip[0], field = zip[1];
-        this.fieldPropety(field, "change").onValue(function(v) {
-          return console.log("VALUE:::", v);
-        });
+        doValidate = (function(name) {
+          return function(value) {
+            console.log("VALUE:::", value);
+            return _this.validator.validate(name, value);
+          };
+        })(name);
+        this.fieldPropety(field, "change").onValue(doValidate);
         _results.push(When(this.onFieldFocus(field, "focus", name, this.getStoredError)).then(function(error) {
           return _this.displayError(error);
         }));

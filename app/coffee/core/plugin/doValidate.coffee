@@ -4,7 +4,8 @@ define [
     "wire"
     "components/form/validator/spec"
 ], (_, When, wire, defaultValidator) ->
-            
+    
+    # TODO
     unbindAll = () ->
 
     return (options) ->
@@ -28,9 +29,10 @@ define [
                                     spec: defaultValidator
                                     provide:
                                         form: target
-                                        strategy: options.fields                                  
+                                        strategy: options.strategy                                  
                                         slot: options.displaySlot
                         }).then (context) ->
+                            # TODO think what should be provided to unbindAll from context - or no need
                             resolver.resolve()
                     else
                         resolver.resolve()

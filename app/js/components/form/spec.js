@@ -27,11 +27,21 @@ define({
       }
     }
   },
-  formFields: {
+  formFieldsStrategy: {
     firstName: {
       "firstNameRule": {
         rule: /^[a-zA-Zа-яА-ЯёЁ]+[a-zA-Zа-яА-ЯёЁ\-]*$/g,
         message: "English - russian letters, etc"
+      },
+      "notLonger": {
+        rule: function(value) {
+          if (value.length > 10) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        message: "Not longer 10"
       }
     },
     email: {
@@ -53,8 +63,8 @@ define({
       }
     },
     validate: {
-      fields: {
-        $ref: 'formFields'
+      strategy: {
+        $ref: 'formFieldsStrategy'
       },
       displaySlot: {
         $ref: 'dom.first!.errorDisplay',

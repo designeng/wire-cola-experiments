@@ -1,3 +1,17 @@
+    # custom validator can be provided!
+    # validator:
+    #     wire:
+    #         spec: "components/form/validator/spec"
+    #         provide:
+    #             form: {$ref: 'formView'}
+    #             strategy: {$ref: 'formFields'}
+    #             slot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}
+    # ... and then:
+    # formView:
+    #   validate:
+    #       validator: {$ref: 'validator'}
+    # 
+
 define
     $plugins:[
         # "wire/debug"
@@ -27,11 +41,14 @@ define
                 save: "save"
                 clear: "clear"
 
-    formFields:
+    formFieldsStrategy:
         firstName:
             "firstNameRule":
                 rule: /^[a-zA-Zа-яА-ЯёЁ]+[a-zA-Zа-яА-ЯёЁ\-]*$/g
                 message: "English - russian letters, etc"
+            "notLonger":
+                rule: (value) -> if value.length > 10 then false else true
+                message: "Not longer 10"
         email:
             "emailRule":
                 rule: /@/g
@@ -42,16 +59,6 @@ define
             template: {$ref: 'formViewTemplate'}
         insert:
             at: {$ref: 'slot'}
-        validate: {
-            # validator: {$ref: 'validator'}
-            fields: {$ref: 'formFields'}
+        validate:
+            strategy: {$ref: 'formFieldsStrategy'}
             displaySlot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}
-        }
-
-    # validator:
-    #     wire:
-    #         spec: "components/form/validator/spec"
-    #         provide:
-    #             form: {$ref: 'formView'}
-    #             strategy: {$ref: 'formFields'}
-    #             slot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}

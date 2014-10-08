@@ -24,9 +24,13 @@ define [
             for zip in zippedFields
                 [name, field] = zip
 
-                @fieldPropety(field, "change").onValue (v) ->
-                    # validate it
-                    console.log "VALUE:::", v
+                doValidate = do (name) =>
+                    return (value) =>
+                        console.log "VALUE:::", value
+                        @validator.validate(name, value)
+
+
+                @fieldPropety(field, "change").onValue doValidate
 
                 When(@onFieldFocus(field, "focus", name, @getStoredError)).then (error) =>
                     @displayError(error)
