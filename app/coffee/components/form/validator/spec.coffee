@@ -8,13 +8,21 @@ define
         "core/plugin/validate"
     ]
 
-    # fieldsValues:
-    #     create: "components/form/validator/fieldsValues"
+    errorStorage:
+        create: "components/form/validator/errorStorage"
+
+    errorDisplay:
+        wire:
+            spec: "components/form/validator/display/spec"
+            provide:
+                displaySlot: {$ref: 'slot'}
 
     controller:
         create: "components/form/validator/controller"
         properties:
-            form: {$ref: 'form'}
+            form        : {$ref: 'form'}
+            errorStorage: {$ref: 'errorStorage'}
+            errorDisplay: {$ref: 'errorDisplay'} 
         ready:
             onReady: {}
             

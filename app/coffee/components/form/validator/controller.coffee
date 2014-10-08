@@ -1,27 +1,54 @@
 define [
     "underscore"
     "jquery"
+    "when"
     "kefir"
     "kefirJquery"
-], (_, $, kefir) ->
+], (_, $, When, kefir) ->
 
     class Controller
 
         $form: null
 
         onReady: ->
-            console.log @form
+
+            _.bindAll @, "getStoredError"
+
             @$form = $(@form)
 
-            fields = @getFileds(["lastName", "email"])
-            streams = @getStreams(fields)
+            names = ["firstName", "email"]
+            fields = @getFields(names)
+            
+            zippedFields = @getZippedFields(names, fields)
 
-            console.log streams
+            for zip in zippedFields
+                [name, field] = zip
+
+                @fieldPropety(field, "change").onValue (v) ->
+                    # validate it
+                    console.log "VALUE:::", v
+
+                When(@onFieldFocus(field, "focus", name, @getStoredError)).then (error) =>
+                    console.log "DEFFERED ERROR:::", error
+
+                    if error
+                        @displayError(error)
 
 
-        getFileds: (fieldNames) ->
+
+
+            # streams = @getStreams(fields, "change").map (x) -> 
+            #     console.log "X:::", x
+
+            # console.log streams
+
+
+        getFields: (fieldNames) ->
             fields = _.map fieldNames, (name) =>
                 @$form.find("input[name='" + name + "']")
+
+        getZippedFields: (names, fields) ->
+            _.zip names, fields
 
         getValues: (fields) ->
             values = _.map fields, (field) ->
@@ -30,4 +57,36 @@ define [
         getStreams: (fields, event) ->
             streams = _.map fields, (field) ->
                 field.asKefirStream(event)
+
+        fieldPropety: (field, event) ->
+            getValue = () ->
+                field.val()
+            field.asKefirStream(event, getValue)
+                    .toProperty(getValue())
+
+        onFieldFocus: (field, event, name, getStored) ->
+
+            deffered = When.defer()
+
+            onValueFn = () ->
+                    storedError = getStored(name)
+                    console.log "storedError:::", storedError
+                    deffered.resolve(storedError)
+
+            field.asKefirStream("focus").onValue onValueFn
+            return deffered.promise
+            
+        # interaction with injected error storage
+        getStoredError: (fieldName) ->
+            @errorStorage.getValue(fieldName)
+
+        storeError: (fieldName, error) ->
+            @errorStorage.getValue(fieldName, error)
+
+        # interaction with injected error display
+        displayError: (error) ->
+            @errorDisplay.controller.displayError error
+
+
+
 

@@ -31,18 +31,11 @@ define
         firstName:
             "firstNameRule":
                 rule: /^[a-zA-Zа-яА-ЯёЁ]+[a-zA-Zа-яА-ЯёЁ\-]*$/g
-                message: "Это поле может содержать только русские и английские буквы, дефис и пробел"
-        cpid:
-            "cpidRule":
-                rule: /^(([\da-zA-Z]{6})|(\d{3}\-?\d{3}\-?\d{3}\-?))$/g
-                message: [
-                    "Минимальное количество символов в этом поле: 6"
-                    "Номер заказа может включать только цифры, английские буквы и дефис"
-                ]
-        secretCode:
-            "secretCodeRule":
-                rule: /^\d{6}$/g
-                message: "Код состоит из 6 цифр"
+                message: "English - russian letters, etc"
+        email:
+            "emailRule":
+                rule: /@/g
+                message: "Should have @"
 
     formView:
         render:
@@ -59,3 +52,4 @@ define
             spec: "components/form/validator/spec"
             provide:
                 form: {$ref: 'formView'}
+                slot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}
