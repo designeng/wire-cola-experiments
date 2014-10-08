@@ -5,7 +5,7 @@ define
         "wire/dom/render"
         "wire/on"
         "core/plugin/template/hb"
-        "core/plugin/validate"
+        "core/plugin/doValidate"
     ]
 
     formController:
@@ -42,14 +42,16 @@ define
             template: {$ref: 'formViewTemplate'}
         insert:
             at: {$ref: 'slot'}
-        validate:
+        validate: {
+            # validator: {$ref: 'validator'}
             fields: {$ref: 'formFields'}
-            afterFieldValidation: {$ref: "formController.afterFieldValidation"}
-            onValidationComplete: {$ref: "formController.onValidationComplete"}
+            displaySlot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}
+        }
 
-    validator:
-        wire:
-            spec: "components/form/validator/spec"
-            provide:
-                form: {$ref: 'formView'}
-                slot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}
+    # validator:
+    #     wire:
+    #         spec: "components/form/validator/spec"
+    #         provide:
+    #             form: {$ref: 'formView'}
+    #             strategy: {$ref: 'formFields'}
+    #             slot: {$ref: 'dom.first!.errorDisplay', at: 'formView'}

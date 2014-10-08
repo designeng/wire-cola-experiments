@@ -13,6 +13,17 @@ define({
       }
     }
   },
+  validator: {
+    create: "components/form/validator/validator",
+    properties: {
+      strategy: {
+        $ref: 'strategy'
+      }
+    },
+    ready: {
+      parseStrategy: {}
+    }
+  },
   controller: {
     create: "components/form/validator/controller",
     properties: {
@@ -24,6 +35,9 @@ define({
       },
       errorDisplay: {
         $ref: 'errorDisplay'
+      },
+      validator: {
+        $ref: 'validator'
       }
     },
     ready: {

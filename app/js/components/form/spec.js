@@ -1,5 +1,5 @@
 define({
-  $plugins: ["wire/dom", "wire/dom/render", "wire/on", "core/plugin/template/hb", "core/plugin/validate"],
+  $plugins: ["wire/dom", "wire/dom/render", "wire/on", "core/plugin/template/hb", "core/plugin/doValidate"],
   formController: {
     create: "components/form/controller",
     ready: {
@@ -56,25 +56,9 @@ define({
       fields: {
         $ref: 'formFields'
       },
-      afterFieldValidation: {
-        $ref: "formController.afterFieldValidation"
-      },
-      onValidationComplete: {
-        $ref: "formController.onValidationComplete"
-      }
-    }
-  },
-  validator: {
-    wire: {
-      spec: "components/form/validator/spec",
-      provide: {
-        form: {
-          $ref: 'formView'
-        },
-        slot: {
-          $ref: 'dom.first!.errorDisplay',
-          at: 'formView'
-        }
+      displaySlot: {
+        $ref: 'dom.first!.errorDisplay',
+        at: 'formView'
       }
     }
   }

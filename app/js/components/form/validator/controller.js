@@ -21,10 +21,7 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
           return console.log("VALUE:::", v);
         });
         _results.push(When(this.onFieldFocus(field, "focus", name, this.getStoredError)).then(function(error) {
-          console.log("DEFFERED ERROR:::", error);
-          if (error) {
-            return _this.displayError(error);
-          }
+          return _this.displayError(error);
         }));
       }
       return _results;
@@ -40,20 +37,6 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
 
     Controller.prototype.getZippedFields = function(names, fields) {
       return _.zip(names, fields);
-    };
-
-    Controller.prototype.getValues = function(fields) {
-      var values;
-      return values = _.map(fields, function(field) {
-        return field.val();
-      });
-    };
-
-    Controller.prototype.getStreams = function(fields, event) {
-      var streams;
-      return streams = _.map(fields, function(field) {
-        return field.asKefirStream(event);
-      });
     };
 
     Controller.prototype.fieldPropety = function(field, event) {
@@ -87,6 +70,20 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
 
     Controller.prototype.displayError = function(error) {
       return this.errorDisplay.controller.displayError(error);
+    };
+
+    Controller.prototype.getValues = function(fields) {
+      var values;
+      return values = _.map(fields, function(field) {
+        return field.val();
+      });
+    };
+
+    Controller.prototype.getStreams = function(fields, event) {
+      var streams;
+      return streams = _.map(fields, function(field) {
+        return field.asKefirStream(event);
+      });
     };
 
     return Controller;

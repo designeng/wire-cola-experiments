@@ -29,18 +29,7 @@ define [
                     console.log "VALUE:::", v
 
                 When(@onFieldFocus(field, "focus", name, @getStoredError)).then (error) =>
-                    console.log "DEFFERED ERROR:::", error
-
-                    if error
-                        @displayError(error)
-
-
-
-
-            # streams = @getStreams(fields, "change").map (x) -> 
-            #     console.log "X:::", x
-
-            # console.log streams
+                    @displayError(error)
 
 
         getFields: (fieldNames) ->
@@ -49,14 +38,6 @@ define [
 
         getZippedFields: (names, fields) ->
             _.zip names, fields
-
-        getValues: (fields) ->
-            values = _.map fields, (field) ->
-                field.val()
-
-        getStreams: (fields, event) ->
-            streams = _.map fields, (field) ->
-                field.asKefirStream(event)
 
         fieldPropety: (field, event) ->
             getValue = () ->
@@ -75,7 +56,9 @@ define [
 
             field.asKefirStream("focus").onValue onValueFn
             return deffered.promise
-            
+
+        # interaction with injected validator
+
         # interaction with injected error storage
         getStoredError: (fieldName) ->
             @errorStorage.getValue(fieldName)
@@ -86,6 +69,16 @@ define [
         # interaction with injected error display
         displayError: (error) ->
             @errorDisplay.controller.displayError error
+
+
+        # TODO: remove if not used
+        getValues: (fields) ->
+            values = _.map fields, (field) ->
+                field.val()
+
+        getStreams: (fields, event) ->
+            streams = _.map fields, (field) ->
+                field.asKefirStream(event)
 
 
 
