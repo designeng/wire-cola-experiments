@@ -3,22 +3,27 @@ define [
     "jquery"
     "when"
 ], (_, $, When) ->
-
     class Controller
 
         onReady: ->
-        	@display = @normalize @display
+            @display = @normalize @display
 
         normalize: (view) ->
-        	return $(view)
+            return $(view)
 
-        displayError: (error) ->
-        	if !error.message
-        		@display.hide()
-        		return
-        	else
-        		@display.show()
+        displayError: (name, error) ->
+            console.log "ERROR:::::::", name, error
+            if !error.messages
+                console.log name, "NO ERRORS"
+                @display.hide()
+            else
+                messages = _.flatten error.messages
 
-	        	@display.html _.reduce(error, (content, text) ->
-	        		content += "<li>#{text}</li>"
-	        	, "")
+                console.log "messages>>>>>>>", messages
+
+                @display.html _.reduce(messages, (content, text) ->
+                    content += "<li>#{text}</li>"
+                    console.log "content::::", content
+                    return content
+                , "")
+                @display.show()

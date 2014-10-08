@@ -22,13 +22,14 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
             var result;
             if (value) {
               result = _this.validator.validate(name, value);
-              return console.log("VALIDATION RESULT:::", name, result);
+              console.log("VALIDATION RESULT:::", name, result);
+              return _this.displayError(name, result);
             }
           };
         })(name);
         this.fieldPropety(field, "change").onValue(doValidate);
         _results.push(When(this.onFieldFocus(field, "focus", name, this.getStoredError)).then(function(error) {
-          return _this.displayError(error);
+          return _this.displayError(name, error);
         }));
       }
       return _results;
@@ -75,8 +76,8 @@ define(["underscore", "jquery", "when", "kefir", "kefirJquery"], function(_, $, 
       return this.errorStorage.getValue(fieldName, error);
     };
 
-    Controller.prototype.displayError = function(error) {
-      return this.errorDisplay.controller.displayError(error);
+    Controller.prototype.displayError = function(name, error) {
+      return this.errorDisplay.controller.displayError(name, error);
     };
 
     Controller.prototype.getValues = function(fields) {

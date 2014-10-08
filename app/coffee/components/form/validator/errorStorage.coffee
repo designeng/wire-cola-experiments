@@ -10,8 +10,8 @@ define [
     	getValue: (name) ->
     		return {
     			name: name
-    			message: @storage[name]
+    			messages: @storage[name]
     		}
     		
-    	setValue: (name, message) ->
-    		@storage[name] = message
+    	setValue: (name, messages) ->
+    		@storage[name] = messages

@@ -29,12 +29,12 @@ define [
                         if value
                             result = @validator.validate(name, value)
                             console.log "VALIDATION RESULT:::", name, result
-
+                            @displayError(name, result)
 
                 @fieldPropety(field, "change").onValue doValidate
 
                 When(@onFieldFocus(field, "focus", name, @getStoredError)).then (error) =>
-                    @displayError(error)
+                    @displayError(name, error)
 
 
         getFields: (fieldNames) ->
@@ -72,9 +72,8 @@ define [
             @errorStorage.getValue(fieldName, error)
 
         # interaction with injected error display
-        displayError: (error) ->
-            @errorDisplay.controller.displayError error
-
+        displayError: (name, error) ->
+            @errorDisplay.controller.displayError name, error
 
         # TODO: remove if not used
         getValues: (fields) ->
@@ -84,7 +83,3 @@ define [
         getStreams: (fields, event) ->
             streams = _.map fields, (field) ->
                 field.asKefirStream(event)
-
-
-
-

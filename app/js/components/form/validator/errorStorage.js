@@ -8,12 +8,12 @@ define(["underscore"], function(_) {
     ErrorStorage.prototype.getValue = function(name) {
       return {
         name: name,
-        message: this.storage[name]
+        messages: this.storage[name]
       };
     };
 
-    ErrorStorage.prototype.setValue = function(name, message) {
-      return this.storage[name] = message;
+    ErrorStorage.prototype.setValue = function(name, messages) {
+      return this.storage[name] = messages;
     };
 
     return ErrorStorage;
