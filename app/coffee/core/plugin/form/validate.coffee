@@ -4,16 +4,8 @@ define [
     "wire"
     "components/form/validator/spec"
 ], (_, When, wire, defaultValidator) ->
-    
-    # TODO
-    unbindAll = () ->
 
     return (options) ->
-
-        # validation should be on:
-        # "submit"
-        # "change" (mark it as valid after change)
-        # "keyup" - if field was validated and not valid
 
         validateFacet = (resolver, facet, wire) ->
             wire(facet.options)
@@ -22,6 +14,12 @@ define [
                     target = facet.target
 
                     if !options.validator
+
+                        essential = ["strategy", "successHandler", "displaySlot"]
+                        for opt in essential
+                            if !options[opt]
+                                throw new Error "#{opt} should be provided!"
+
                         wire({
                             formView: target
                             validator:
@@ -29,20 +27,16 @@ define [
                                     spec: defaultValidator
                                     provide:
                                         form: target
-                                        strategy: options.strategy                                  
+                                        fieldNames: _.keys options.strategy
+                                        strategy: options.strategy
+                                        successHandler: options.successHandler
                                         slot: options.displaySlot
                         }).then (context) ->
-                            # TODO think what should be provided to unbindAll from context - or no need
                             resolver.resolve()
                     else
                         resolver.resolve()
 
-        pluginObject = 
-            context:
-                destroy: (resolver, wire) ->
-                    unbindAll()
-                    resolver.resolve()
-
+        pluginObject =
             facets: 
                 validate:
                     ready: validateFacet

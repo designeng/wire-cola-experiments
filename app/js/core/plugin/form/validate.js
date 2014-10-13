@@ -1,13 +1,18 @@
 define(["underscore", "when", "wire", "components/form/validator/spec"], function(_, When, wire, defaultValidator) {
-  var unbindAll;
-  unbindAll = function() {};
   return function(options) {
     var pluginObject, validateFacet;
     validateFacet = function(resolver, facet, wire) {
       return wire(facet.options).then(function(options) {
-        var target;
+        var essential, opt, target, _i, _len;
         target = facet.target;
         if (!options.validator) {
+          essential = ["strategy", "successHandler", "displaySlot"];
+          for (_i = 0, _len = essential.length; _i < _len; _i++) {
+            opt = essential[_i];
+            if (!options[opt]) {
+              throw new Error("" + opt + " should be provided!");
+            }
+          }
           return wire({
             formView: target,
             validator: {
@@ -15,7 +20,9 @@ define(["underscore", "when", "wire", "components/form/validator/spec"], functio
                 spec: defaultValidator,
                 provide: {
                   form: target,
+                  fieldNames: _.keys(options.strategy),
                   strategy: options.strategy,
+                  successHandler: options.successHandler,
                   slot: options.displaySlot
                 }
               }
@@ -29,12 +36,6 @@ define(["underscore", "when", "wire", "components/form/validator/spec"], functio
       });
     };
     pluginObject = {
-      context: {
-        destroy: function(resolver, wire) {
-          unbindAll();
-          return resolver.resolve();
-        }
-      },
       facets: {
         validate: {
           ready: validateFacet
