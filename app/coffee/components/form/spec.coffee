@@ -19,7 +19,7 @@ define
         "wire/dom/render"
         "wire/on"
         "core/plugin/template/hb"
-        "core/plugin/doValidate"
+        "core/plugin/form/validate"
     ]
 
     formController:

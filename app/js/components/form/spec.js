@@ -1,5 +1,5 @@
 define({
-  $plugins: ["wire/dom", "wire/dom/render", "wire/on", "core/plugin/template/hb", "core/plugin/doValidate"],
+  $plugins: ["wire/dom", "wire/dom/render", "wire/on", "core/plugin/template/hb", "core/plugin/form/validate"],
   formController: {
     create: "components/form/controller",
     ready: {
