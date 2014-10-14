@@ -32,6 +32,12 @@ define({
           slot: {
             $ref: "dom.first!#page"
           }
+        },
+        "emitter": {
+          spec: "components/emitter/spec",
+          slot: {
+            $ref: "dom.first!#page"
+          }
         }
       }
     }

@@ -1,9 +1,18 @@
 define({
   $plugins: ["wire/debug", "wire/dom", "wire/dom/render", "wire/on"],
-  controller: {
-    create: "components/emitter/controller",
-    ready: {
-      onReady: {}
+  emitterView: {
+    render: {
+      template: {
+        module: "text!components/emitter/template.html"
+      }
+    },
+    insert: {
+      at: {
+        $ref: 'slot'
+      }
     }
+  },
+  controller: {
+    create: "components/emitter/controller"
   }
 });
