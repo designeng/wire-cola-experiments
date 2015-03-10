@@ -105,7 +105,6 @@ define [
 
                     getFieldData = do (name) ->
                         () ->
-                            console.debug name, inputs[name].val()
                             obj = 
                                 name: name
                                 value: inputs[name].val()
@@ -113,8 +112,10 @@ define [
 
                     fieldNamesStreams[name] = inputs[name]
                         .asKefirStream("change", getFieldData)
-                        .onValue (value) ->
-                            console.debug "ON VALUE:::", value
+
+                # combine streams from all inputs whose names in fieldNames
+                Kefir.combine(_.values fieldNamesStreams).onValue (res) ->
+                    console.debug "RES:", res
 
                 resolver.resolve()
 

@@ -96,7 +96,6 @@ define(["underscore", "jquery", "when", "meld", "wire/lib/object", "core/utils/s
           getFieldData = (function(name) {
             return function() {
               var obj;
-              console.debug(name, inputs[name].val());
               obj = {
                 name: name,
                 value: inputs[name].val()
@@ -104,9 +103,10 @@ define(["underscore", "jquery", "when", "meld", "wire/lib/object", "core/utils/s
               return obj;
             };
           })(name);
-          return fieldNamesStreams[name] = inputs[name].asKefirStream("change", getFieldData).onValue(function(value) {
-            return console.debug("ON VALUE:::", value);
-          });
+          return fieldNamesStreams[name] = inputs[name].asKefirStream("change", getFieldData);
+        });
+        Kefir.combine(_.values(fieldNamesStreams)).onValue(function(res) {
+          return console.debug("RES:", res);
         });
         return resolver.resolve();
       });
