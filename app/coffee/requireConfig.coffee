@@ -138,7 +138,7 @@ require.config
         {
             name: "kefirJquery"
             main: "kefir-jquery"
-            location: "../../bower_components/kefir/dist/addons"
+            location: "../../bower_components/kefir-jquery"
         }     
     ]
 

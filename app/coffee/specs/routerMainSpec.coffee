@@ -24,4 +24,7 @@ define
                 "transducer"    :
                     spec: "components/transducer/spec"
                     slot: {$ref: "dom.first!#page"}
+                "collection"    :
+                    spec: "components/collection/spec"
+                    slot: {$ref: "dom.first!#page"}
 
