@@ -29,7 +29,9 @@ define [
             onReady: (collection) ->
                 collection.addSource collectionSource
 
-            oneFilterCallback: callbackSpy
+            # onBunchData: callbackSpy
+            onBunchData: (res) ->
+                console.debug "onBunchData RES::::", res
 
             invokerOne: ->
                 return {
@@ -52,10 +54,18 @@ define [
             'wire/dom/render'
             'wire/connect'
             'core/plugin/data/structure/collection'
+            'core/plugin/form/bySelector'
             'core/plugin/form/values/bunch'
         ]
 
-        form: {$ref: 'dom.first!.searchForm'}
+        form: 
+            bySelector: {$ref: 'dom.first!.searchForm'}
+            valuesBunch:
+                byFields:[
+                    "firstName"
+                    "lastName"
+                ]
+                deliverTo: {$ref: 'controller.onBunchData'}
 
         controller:
             create: "controller"
@@ -67,8 +77,8 @@ define [
 
         secondCollection:
             cloneStructure: {$ref: "firstCollection"}
-            connect:
-                "applyFilter": "getSource | controller.oneFilterCallback"
+            # connect:
+            #     "applyFilter": "getSource | controller.oneFilterCallback"
 
     # tests
     describe "bunch plugin jasmine spec", ->
@@ -85,14 +95,27 @@ define [
             @ctx.destroy()
             done()
 
-        it "secondCollection should listen to streams", (done) ->
+        it "deliverToCallback should be invoked", (done) ->
             form = $(@ctx.form)
 
             input0 = form.find("[name='firstName']")
-            input = form.find("[name='lastName']")
+            input1 = form.find("[name='lastName']")
+
+                # anotherField name
+            anotherInput = form.find("[name='anotherField']")
 
             input0.focus()
             input0.val("123")
 
-            done()
+            input1.focus()
+            input1.val("234")
+
+            anotherInput.focus()
+
+            # expect(callbackSpy).toHaveBeenCalled()
+
+            setTimeout () =>
+                done() 
+            , 2000
+            
             

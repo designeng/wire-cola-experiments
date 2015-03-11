@@ -26,6 +26,7 @@ define(["lodash", "jquery", "kefir", "kefirJquery"], function(_, $, Kefir, Kefir
           getFieldData = (function(name) {
             return function() {
               var obj;
+              console.debug("getFieldData", name, inputs[name].val());
               obj = {
                 name: name,
                 value: inputs[name].val()

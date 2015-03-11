@@ -41,7 +41,9 @@ define(["underscore", "jquery", "wire", "text!/test/jasmine/fixtures/formFixture
         return collection.addSource(collectionSource);
       };
 
-      Controller.prototype.oneFilterCallback = callbackSpy;
+      Controller.prototype.onBunchData = function(res) {
+        return console.debug("onBunchData RES::::", res);
+      };
 
       Controller.prototype.invokerOne = function() {
         return {
@@ -64,9 +66,17 @@ define(["underscore", "jquery", "wire", "text!/test/jasmine/fixtures/formFixture
     })();
   });
   integrationSpec = {
-    $plugins: ['wire/debug', 'wire/on', 'wire/dom', 'wire/dom/render', 'wire/connect', 'core/plugin/data/structure/collection', 'core/plugin/form/values/bunch'],
+    $plugins: ['wire/debug', 'wire/on', 'wire/dom', 'wire/dom/render', 'wire/connect', 'core/plugin/data/structure/collection', 'core/plugin/form/bySelector', 'core/plugin/form/values/bunch'],
     form: {
-      $ref: 'dom.first!.searchForm'
+      bySelector: {
+        $ref: 'dom.first!.searchForm'
+      },
+      valuesBunch: {
+        byFields: ["firstName", "lastName"],
+        deliverTo: {
+          $ref: 'controller.onBunchData'
+        }
+      }
     },
     controller: {
       create: "controller",
@@ -82,9 +92,6 @@ define(["underscore", "jquery", "wire", "text!/test/jasmine/fixtures/formFixture
     secondCollection: {
       cloneStructure: {
         $ref: "firstCollection"
-      },
-      connect: {
-        "applyFilter": "getSource | controller.oneFilterCallback"
       }
     }
   };
@@ -104,14 +111,21 @@ define(["underscore", "jquery", "wire", "text!/test/jasmine/fixtures/formFixture
       this.ctx.destroy();
       return done();
     });
-    return it("secondCollection should listen to streams", function(done) {
-      var form, input, input0;
+    return it("deliverToCallback should be invoked", function(done) {
+      var anotherInput, form, input0, input1,
+        _this = this;
       form = $(this.ctx.form);
       input0 = form.find("[name='firstName']");
-      input = form.find("[name='lastName']");
+      input1 = form.find("[name='lastName']");
+      anotherInput = form.find("[name='anotherField']");
       input0.focus();
       input0.val("123");
-      return done();
+      input1.focus();
+      input1.val("234");
+      anotherInput.focus();
+      return setTimeout(function() {
+        return done();
+      }, 2000);
     });
   });
 });

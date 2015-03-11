@@ -33,6 +33,7 @@ define [
 
                     getFieldData = do (name) ->
                         () ->
+                            console.debug "getFieldData", name, inputs[name].val()
                             obj = 
                                 name: name
                                 value: inputs[name].val()
