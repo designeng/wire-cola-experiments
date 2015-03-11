@@ -1,4 +1,4 @@
 define(function() {
   var specs;
-  return specs = ["core/plugin/validate"];
+  return specs = ["core/plugin/form/values/bunch"];
 });

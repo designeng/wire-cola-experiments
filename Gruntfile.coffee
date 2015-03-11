@@ -11,7 +11,7 @@ module.exports = (grunt) ->
                 files: ['app/coffee/**/**.coffee']
                 tasks: ["coffee-compile-app"]
             coffee_jasmine:
-                files: ['test/jasmine/coffee/**/**.coffee']
+                files: ['test/jasmine/coffee/**/**.coffee', 'test/jasmine/coffee/SpecRunner.coffee']
                 tasks: ["coffee-compile-jasmine"]
             js_requireConfig:
                 files: ["app/js/requireConfig.js", "app/js/main.js", "test/jasmine/SpecRunner.js"]
