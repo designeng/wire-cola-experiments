@@ -122,10 +122,12 @@ define(["underscore", "jquery", "wire", "text!/test/jasmine/fixtures/formFixture
       input0.val("123");
       input1.focus();
       input1.val("234");
-      anotherInput.focus();
+      setTimeout(function() {
+        return anotherInput.focus();
+      }, 300);
       return setTimeout(function() {
         return done();
-      }, 2000);
+      }, 1000);
     });
   });
 });

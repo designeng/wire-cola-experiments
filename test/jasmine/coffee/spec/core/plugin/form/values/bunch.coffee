@@ -101,7 +101,6 @@ define [
             input0 = form.find("[name='firstName']")
             input1 = form.find("[name='lastName']")
 
-                # anotherField name
             anotherInput = form.find("[name='anotherField']")
 
             input0.focus()
@@ -110,12 +109,14 @@ define [
             input1.focus()
             input1.val("234")
 
-            anotherInput.focus()
+            setTimeout () =>
+                anotherInput.focus() 
+            , 300
 
             # expect(callbackSpy).toHaveBeenCalled()
 
             setTimeout () =>
                 done() 
-            , 2000
+            , 1000
             
             
