@@ -1,12 +1,43 @@
-define(["lodash", "jquery", "kefir", "kefirJquery"], function(_, $, Kefir, KefirJquery) {
+define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery"], function(_, $, meld, object, Kefir, KefirJquery) {
   KefirJquery.init(Kefir, $);
   return function(options) {
-    var pluginInstance, valuesBunchFacetReady;
+    var byInvocationCreate, getClassAndMethod, isRef, pluginInstance, removers, valuesBunchFacetReady;
+    removers = [];
+    isRef = function(it) {
+      return it && object.hasOwn(it, '$ref');
+    };
+    getClassAndMethod = function(str) {
+      return str.split(".").slice(0, 2);
+    };
+    byInvocationCreate = function(referenceObj, streams, wire) {
+      var invoker, providerClass, spec, _ref;
+      if (!isRef(referenceObj)) {
+        throw new Error("Should be described as wire reference!");
+      }
+      _ref = getClassAndMethod(referenceObj["$ref"]), providerClass = _ref[0], invoker = _ref[1];
+      spec = {
+        provider: {
+          $ref: providerClass
+        },
+        method: referenceObj
+      };
+      return wire(spec).then(function(specObject) {
+        streams.push(Kefir.fromEvent(specObject.provider.emitter, "change"));
+        return removers.push(meld.after(specObject.provider, invoker, function(result) {
+          console.debug("RES:", result);
+          return specObject.provider.emitter.emit("change", result);
+        }));
+      });
+    };
     valuesBunchFacetReady = function(resolver, facet, wire) {
-      var fieldNamesStreams, inputs, target;
+      var inputs, streams, target;
       inputs = [];
-      fieldNamesStreams = [];
+      streams = [];
       target = facet.target;
+      _.each(facet.options.byInvocations, function(invocationReferenceObj) {
+        console.debug("invocationReferenceObj", invocationReferenceObj);
+        return byInvocationCreate(invocationReferenceObj, streams, wire);
+      });
       return wire(facet.options).then(function(options) {
         var deliverTo, deliverToCallback, form;
         deliverTo = options.deliverTo;
@@ -34,9 +65,10 @@ define(["lodash", "jquery", "kefir", "kefirJquery"], function(_, $, Kefir, Kefir
               return obj;
             };
           })(name);
-          return fieldNamesStreams[name] = inputs[name].asKefirStream("change", getFieldData);
+          return streams[name] = inputs[name].asKefirStream("change", getFieldData);
         });
-        Kefir.combine(_.values(fieldNamesStreams)).onValue(deliverToCallback);
+        console.debug("streams::::", streams);
+        Kefir.combine(_.values(streams)).onValue(deliverToCallback);
         return resolver.resolve();
       });
     };

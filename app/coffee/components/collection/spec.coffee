@@ -18,6 +18,10 @@ define ->
         insert:
             at: {$ref: 'slot'}
         valuesBunch:
+            byInvocations: [
+                {$ref: 'controller.oneTrigger'}
+                {$ref: 'controller.twoTrigger'}
+            ]
             byFields:[
                 "firstName"
                 "lastName"
@@ -29,14 +33,8 @@ define ->
 
     documentTypesCollection:
         cloneStructure: {$ref: 'originalCollection'}
-        # bindFiltersToFields:
-        #     form: {$ref: 'form'}
-        #     fieldNames:[
-        #         "firstName"
-        #         "lastName"
-        #     ]
-        connect:
-            "applyFilter": "getSource | controller.onCollectionFiltered"
+        # connect:
+        #     "applyFilter": "getSource | controller.onCollectionFiltered"
 
     source: [
         {one: 1, two: 2}

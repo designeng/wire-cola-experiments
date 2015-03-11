@@ -13,6 +13,13 @@ define(function() {
         }
       },
       valuesBunch: {
+        byInvocations: [
+          {
+            $ref: 'controller.oneTrigger'
+          }, {
+            $ref: 'controller.twoTrigger'
+          }
+        ],
         byFields: ["firstName", "lastName"],
         deliverTo: {
           $ref: 'controller.onBunchData'
@@ -25,9 +32,6 @@ define(function() {
     documentTypesCollection: {
       cloneStructure: {
         $ref: 'originalCollection'
-      },
-      connect: {
-        "applyFilter": "getSource | controller.onCollectionFiltered"
       }
     },
     source: [

@@ -2,18 +2,52 @@
 define [
     "lodash"
     "jquery"
+    "meld"
+    "wire/lib/object"
     "kefir"
     "kefirJquery"
-], (_, $, Kefir, KefirJquery) ->
+], (_, $, meld, object, Kefir, KefirJquery) ->
 
     KefirJquery.init Kefir, $
 
     return (options) ->
 
+        removers = []
+
+        isRef = (it) ->
+            return it and object.hasOwn(it, '$ref')
+
+        getClassAndMethod = (str) ->
+            # one dot access restriction
+            return str.split(".").slice(0, 2)
+
+        byInvocationCreate = (referenceObj, streams, wire) ->
+            if !isRef(referenceObj)
+                throw new Error "Should be described as wire reference!"
+
+            # {Array of Strings}
+            [providerClass, invoker] = getClassAndMethod(referenceObj["$ref"])
+
+            spec = 
+                provider: {$ref: providerClass}
+                method: referenceObj
+
+            wire(spec).then (specObject) ->
+                streams.push Kefir.fromEvent(specObject.provider.emitter, "change")
+
+                removers.push meld.after specObject.provider, invoker, (result) ->
+                    console.debug "RES:", result
+                    specObject.provider.emitter.emit "change", result
+
         valuesBunchFacetReady = (resolver, facet, wire) ->
             inputs = []
-            fieldNamesStreams = []
+            streams = []
             target = facet.target
+
+            _.each facet.options.byInvocations, (invocationReferenceObj) ->
+                console.debug "invocationReferenceObj", invocationReferenceObj
+                byInvocationCreate invocationReferenceObj, streams, wire
+
             wire(facet.options).then (options) ->
 
                 deliverTo = options.deliverTo
@@ -39,11 +73,13 @@ define [
                                 value: inputs[name].val()
                             return obj
 
-                    fieldNamesStreams[name] = inputs[name]
+                    streams[name] = inputs[name]
                         .asKefirStream("change", getFieldData)
 
+                console.debug "streams::::", streams
+
                 # combine streams from all inputs whose names in byFields
-                Kefir.combine(_.values fieldNamesStreams).onValue deliverToCallback
+                Kefir.combine(_.values streams).onValue deliverToCallback
 
                 resolver.resolve()
 

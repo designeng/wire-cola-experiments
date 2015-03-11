@@ -144,6 +144,11 @@ require.config
             name: "kefirJquery"
             main: "kefir-jquery"
             location: "../../bower_components/kefir-jquery"
+        }
+        {
+            name: "eventEmitter"
+            main: "EventEmitter"
+            location: "../../bower_components/eventEmitter"
         }     
     ]
 

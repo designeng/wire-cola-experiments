@@ -26,6 +26,7 @@
     "kefir": "~1.0.0",
     "kefir-jquery": "~1.0.0",
     "wire": "~0.10.9",
-    "lodash": "~3.5.0"
+    "lodash": "~3.5.0",
+    "eventEmitter": "~4.2.11"
   }
 }
