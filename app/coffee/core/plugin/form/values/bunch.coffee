@@ -6,7 +6,8 @@ define [
     "wire/lib/object"
     "kefir"
     "kefirJquery"
-], (_, $, meld, object, Kefir, KefirJquery) ->
+    "eventEmitter"
+], (_, $, meld, object, Kefir, KefirJquery, EventEmitter) ->
 
     KefirJquery.init Kefir, $
 
@@ -33,11 +34,16 @@ define [
                 method: referenceObj
 
             wire(spec).then (specObject) ->
-                streams.push Kefir.fromEvent(specObject.provider.emitter, "change")
+                if !specObject.provider.emitter?
+                    specObject.provider.emitter = new EventEmitter()
+                # else
+                #     throw new Error "Emmitter is defined in '#{providerClass}' already!"
+
+                eventName = invoker + "Event"
+                streams.push Kefir.fromEvent(specObject.provider.emitter, eventName)
 
                 removers.push meld.after specObject.provider, invoker, (result) ->
-                    console.debug "RES:", result
-                    specObject.provider.emitter.emit "change", result
+                    specObject.provider.emitter.emit eventName, result
 
         valuesBunchFacetReady = (resolver, facet, wire) ->
             inputs = []
@@ -45,7 +51,7 @@ define [
             target = facet.target
 
             _.each facet.options.byInvocations, (invocationReferenceObj) ->
-                console.debug "invocationReferenceObj", invocationReferenceObj
+                console.debug "invocationReferenceObj", invocationReferenceObj.$ref
                 byInvocationCreate invocationReferenceObj, streams, wire
 
             wire(facet.options).then (options) ->

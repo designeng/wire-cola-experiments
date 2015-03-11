@@ -21,6 +21,7 @@ define ->
             byInvocations: [
                 {$ref: 'controller.oneTrigger'}
                 {$ref: 'controller.twoTrigger'}
+                {$ref: 'controller.threeTrigger'}
             ]
             byFields:[
                 "firstName"

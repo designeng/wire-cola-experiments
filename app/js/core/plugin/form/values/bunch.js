@@ -1,4 +1,4 @@
-define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery"], function(_, $, meld, object, Kefir, KefirJquery) {
+define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery", "eventEmitter"], function(_, $, meld, object, Kefir, KefirJquery, EventEmitter) {
   KefirJquery.init(Kefir, $);
   return function(options) {
     var byInvocationCreate, getClassAndMethod, isRef, pluginInstance, removers, valuesBunchFacetReady;
@@ -22,10 +22,14 @@ define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery"], 
         method: referenceObj
       };
       return wire(spec).then(function(specObject) {
-        streams.push(Kefir.fromEvent(specObject.provider.emitter, "change"));
+        var eventName;
+        if (specObject.provider.emitter == null) {
+          specObject.provider.emitter = new EventEmitter();
+        }
+        eventName = invoker + "Event";
+        streams.push(Kefir.fromEvent(specObject.provider.emitter, eventName));
         return removers.push(meld.after(specObject.provider, invoker, function(result) {
-          console.debug("RES:", result);
-          return specObject.provider.emitter.emit("change", result);
+          return specObject.provider.emitter.emit(eventName, result);
         }));
       });
     };
@@ -35,7 +39,7 @@ define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery"], 
       streams = [];
       target = facet.target;
       _.each(facet.options.byInvocations, function(invocationReferenceObj) {
-        console.debug("invocationReferenceObj", invocationReferenceObj);
+        console.debug("invocationReferenceObj", invocationReferenceObj.$ref);
         return byInvocationCreate(invocationReferenceObj, streams, wire);
       });
       return wire(facet.options).then(function(options) {

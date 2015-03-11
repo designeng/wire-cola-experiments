@@ -1,9 +1,7 @@
-define(["jquery", "underscore", "eventEmitter"], function($, _, EventEmitter) {
+define(["jquery", "underscore"], function($, _, EventEmitter) {
   var Controller;
   return Controller = (function() {
     function Controller() {}
-
-    Controller.prototype.emitter = new EventEmitter();
 
     Controller.prototype.addSourceToOriginal = function(array) {
       return this.originalCollection.addSource(array);
@@ -15,10 +13,12 @@ define(["jquery", "underscore", "eventEmitter"], function($, _, EventEmitter) {
 
     Controller.prototype.onReady = function() {
       var _this = this;
-      console.debug("emitter:::", this.emitter);
       setTimeout(function() {
         return _this.twoTrigger();
       }, 300);
+      setTimeout(function() {
+        return _this.threeTrigger();
+      }, 450);
       return setTimeout(function() {
         return _this.oneTrigger();
       }, 600);
@@ -38,7 +38,15 @@ define(["jquery", "underscore", "eventEmitter"], function($, _, EventEmitter) {
       console.debug("twoTrigger invoked");
       return {
         name: "twoTrigger",
-        value: 123
+        value: 1234567
+      };
+    };
+
+    Controller.prototype.threeTrigger = function() {
+      console.debug("threeTrigger invoked");
+      return {
+        name: "threeTrigger",
+        value: "threeTrigger-----123"
       };
     };
 

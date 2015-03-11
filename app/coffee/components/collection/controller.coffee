@@ -1,16 +1,9 @@
 define [
     "jquery"
     "underscore"
-    "eventEmitter"
 ], ($, _, EventEmitter) ->
 
     class Controller
-
-        emitter: new EventEmitter()
-
-        # on: (handler) ->
-
-        # off: (handler) ->
 
         addSourceToOriginal: (array) ->
             @originalCollection.addSource array
@@ -20,11 +13,13 @@ define [
 
         onReady: ->
 
-            console.debug "emitter:::", @emitter
-
             setTimeout () =>
                 @twoTrigger()
             , 300
+
+            setTimeout () =>
+                @threeTrigger()
+            , 450
 
             setTimeout () =>
                 @oneTrigger()
@@ -44,7 +39,15 @@ define [
             console.debug "twoTrigger invoked"
             return {
                 name: "twoTrigger"
-                value: 123
+                value: 1234567
             }
+
+        threeTrigger: ->
+            console.debug "threeTrigger invoked"
+            return {
+                name: "threeTrigger"
+                value: "threeTrigger-----123"
+            }
+
 
 

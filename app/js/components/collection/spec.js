@@ -18,6 +18,8 @@ define(function() {
             $ref: 'controller.oneTrigger'
           }, {
             $ref: 'controller.twoTrigger'
+          }, {
+            $ref: 'controller.threeTrigger'
           }
         ],
         byFields: ["firstName", "lastName"],
