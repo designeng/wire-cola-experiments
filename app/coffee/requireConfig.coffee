@@ -89,6 +89,11 @@ require.config
             main: "underscore"
             location: "../../bower_components/underscore"
         },
+        {
+            name: "lodash"
+            main: "lodash"
+            location: "../../bower_components/lodash"
+        },
         {   
             name: "underscore.string"
             main: "underscore.string"

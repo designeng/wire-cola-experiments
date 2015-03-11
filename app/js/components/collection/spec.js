@@ -1,6 +1,6 @@
 define(function() {
   return {
-    $plugins: ['wire/debug', 'wire/on', 'wire/dom', 'wire/dom/render', 'wire/aop', 'wire/connect', 'core/plugin/data/structure/collection'],
+    $plugins: ['wire/debug', 'wire/on', 'wire/dom', 'wire/dom/render', 'wire/aop', 'wire/connect', 'core/plugin/data/structure/collection', 'core/plugin/form/values/bunch'],
     form: {
       render: {
         template: {
@@ -11,6 +11,12 @@ define(function() {
         at: {
           $ref: 'slot'
         }
+      },
+      valuesBunch: {
+        byFields: ["firstName", "lastName"],
+        deliverTo: {
+          $ref: 'controller.onBunchData'
+        }
       }
     },
     originalCollection: {
@@ -19,12 +25,6 @@ define(function() {
     documentTypesCollection: {
       cloneStructure: {
         $ref: 'originalCollection'
-      },
-      bindFiltersToFields: {
-        form: {
-          $ref: 'form'
-        },
-        fieldNames: ["firstName", "lastName"]
       },
       connect: {
         "applyFilter": "getSource | controller.onCollectionFiltered"

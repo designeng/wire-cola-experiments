@@ -7,6 +7,10 @@ define(["jquery", "underscore"], function($, _) {
       return this.originalCollection.addSource(array);
     };
 
+    Controller.prototype.onBunchData = function(data) {
+      return console.debug("onBunchData", data);
+    };
+
     Controller.prototype.onReady = function() {
       var _this = this;
       return setTimeout(function() {

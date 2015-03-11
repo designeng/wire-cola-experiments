@@ -8,6 +8,7 @@ define ->
         'wire/aop'
         'wire/connect'
         'core/plugin/data/structure/collection'
+        'core/plugin/form/values/bunch'
     ]
 
     form:
@@ -16,22 +17,24 @@ define ->
                 module: "text!components/collection/template.html"
         insert:
             at: {$ref: 'slot'}
+        valuesBunch:
+            byFields:[
+                "firstName"
+                "lastName"
+            ]
+            deliverTo: {$ref: 'controller.onBunchData'}
 
     originalCollection:
         create: "core/utils/surrogate/Collection"
 
     documentTypesCollection:
         cloneStructure: {$ref: 'originalCollection'}
-        # addFilter: [
-        #     {$ref: 'filters.firstFilter',  after: '.....'}
-        #     {$ref: 'filters.secondFilter', after: '.....'}
-        # ]
-        bindFiltersToFields:
-            form: {$ref: 'form'}
-            fieldNames:[
-                "firstName"
-                "lastName"
-            ]
+        # bindFiltersToFields:
+        #     form: {$ref: 'form'}
+        #     fieldNames:[
+        #         "firstName"
+        #         "lastName"
+        #     ]
         connect:
             "applyFilter": "getSource | controller.onCollectionFiltered"
 
