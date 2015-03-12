@@ -29,7 +29,7 @@ define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery", "
         eventName = invoker + "Event";
         streams.push(Kefir.fromEvent(specObject.provider.emitter, eventName));
         return removers.push(meld.after(specObject.provider, invoker, function(result) {
-          return specObject.provider.emitter.emit(eventName, result);
+          return specObject.provider.emitter.dispatch(eventName, result);
         }));
       });
     };

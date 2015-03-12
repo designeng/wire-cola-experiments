@@ -45,7 +45,8 @@ define [
                 streams.push Kefir.fromEvent(specObject.provider.emitter, eventName)
 
                 removers.push meld.after specObject.provider, invoker, (result) ->
-                    specObject.provider.emitter.emit eventName, result
+                    # specObject.provider.emitter.emit eventName, result
+                    specObject.provider.emitter.dispatch eventName, result
 
         valuesBunchFacetReady = (resolver, facet, wire) ->
             inputs = []

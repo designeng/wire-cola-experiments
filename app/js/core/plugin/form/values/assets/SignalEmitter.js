@@ -1,34 +1,33 @@
 define(['signals'], function(Signal) {
-  var SignalEmitter;
+  var SignalEmitter, _proto;
   SignalEmitter = (function() {
     function SignalEmitter() {
       this._signals = {};
     }
 
-    SignalEmitter.prototype.addListener = function(id, handler, scope, priority) {
-      console.debug(id, handler, scope, priority);
-      if (this._signals[id]) {
-        this._signals[id] = new Signal();
+    SignalEmitter.prototype.addListener = function(event, handler, scope, priority) {
+      if (!this._signals[event]) {
+        this._signals[event] = new Signal();
       }
-      return this._signals[id].add(handler, scope, priority);
+      return this._signals[event].add(handler, scope, priority);
     };
 
-    SignalEmitter.prototype.removeListener = function(id, handler) {
+    SignalEmitter.prototype.removeListener = function(event, handler) {
       var sig;
-      sig = this._signals[id];
+      sig = this._signals[event];
       if (!sig) {
         return;
       }
       return sig.remove(handler);
     };
 
-    SignalEmitter.prototype.getSignal = function(id) {
-      return this._signals[id];
+    SignalEmitter.prototype.getSignal = function(event) {
+      return this._signals[event];
     };
 
-    SignalEmitter.prototype.emit = function(id, args) {
+    SignalEmitter.prototype.dispatch = function(event, args) {
       var sig;
-      sig = this._signals[id];
+      sig = this._signals[event];
       if (!sig) {
         return;
       }
@@ -42,6 +41,7 @@ define(['signals'], function(Signal) {
     return SignalEmitter;
 
   })();
+  _proto = SignalEmitter.prototype;
   SignalEmitter.augment = function(target) {
     var key, _i, _len, _results;
     SignalEmitter.call(target);

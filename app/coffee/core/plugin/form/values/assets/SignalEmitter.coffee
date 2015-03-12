@@ -2,33 +2,36 @@
 define [
     'signals'
 ], (Signal) ->
+
+    # TODO: does not pass event data!
  
     class SignalEmitter
 
         constructor: ->
             @._signals = {}
  
-        addListener: (id, handler, scope, priority) ->
-            console.debug id, handler, scope, priority
-            if @._signals[id]
-                @._signals[id] = new Signal()
-            return @._signals[id].add(handler, scope, priority)
+        addListener: (event, handler, scope, priority) ->
+            if !@._signals[event]
+                @._signals[event] = new Signal()
+            return @._signals[event].add(handler, scope, priority)
  
-        removeListener: (id, handler) ->
-            sig = @._signals[id]
+        removeListener: (event, handler) ->
+            sig = @._signals[event]
             return if !sig 
             sig.remove(handler)
  
-        getSignal: (id) ->
-            return @._signals[id]
+        getSignal: (event) ->
+            return @._signals[event]
  
-        emit: (id, args) ->
-            sig = @._signals[id]
+        dispatch: (event, args) ->
+            sig = @._signals[event]
             return if !sig
             if args
                 sig.dispatch.apply(sig, args)
             else
                 sig.dispatch()
+
+    _proto = SignalEmitter::
  
     SignalEmitter.augment = (target) ->
         SignalEmitter.call(target)
