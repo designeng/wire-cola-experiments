@@ -1,4 +1,4 @@
-define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery", "eventEmitter"], function(_, $, meld, object, Kefir, KefirJquery, EventEmitter) {
+define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery", "./assets/SignalEmitter", "eventEmitter"], function(_, $, meld, object, Kefir, KefirJquery, SignalEmitter, EventEmitter) {
   KefirJquery.init(Kefir, $);
   return function(options) {
     var byInvocationCreate, getClassAndMethod, isRef, pluginInstance, removers, valuesBunchFacetReady;
@@ -24,7 +24,7 @@ define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery", "
       return wire(spec).then(function(specObject) {
         var eventName;
         if (specObject.provider.emitter == null) {
-          specObject.provider.emitter = new EventEmitter();
+          specObject.provider.emitter = new SignalEmitter();
         }
         eventName = invoker + "Event";
         streams.push(Kefir.fromEvent(specObject.provider.emitter, eventName));
@@ -71,7 +71,6 @@ define(["lodash", "jquery", "meld", "wire/lib/object", "kefir", "kefirJquery", "
           })(name);
           return streams[name] = inputs[name].asKefirStream("change", getFieldData);
         });
-        console.debug("streams::::", streams);
         Kefir.combine(_.values(streams)).onValue(deliverToCallback);
         return resolver.resolve();
       });

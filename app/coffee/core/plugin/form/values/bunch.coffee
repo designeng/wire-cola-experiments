@@ -6,8 +6,9 @@ define [
     "wire/lib/object"
     "kefir"
     "kefirJquery"
+    "./assets/SignalEmitter"
     "eventEmitter"
-], (_, $, meld, object, Kefir, KefirJquery, EventEmitter) ->
+], (_, $, meld, object, Kefir, KefirJquery, SignalEmitter, EventEmitter) ->
 
     KefirJquery.init Kefir, $
 
@@ -35,7 +36,8 @@ define [
 
             wire(spec).then (specObject) ->
                 if !specObject.provider.emitter?
-                    specObject.provider.emitter = new EventEmitter()
+                    # specObject.provider.emitter = new EventEmitter()
+                    specObject.provider.emitter = new SignalEmitter()
                 # else
                 #     throw new Error "Emmitter is defined in '#{providerClass}' already!"
 
@@ -81,8 +83,6 @@ define [
 
                     streams[name] = inputs[name]
                         .asKefirStream("change", getFieldData)
-
-                console.debug "streams::::", streams
 
                 # combine streams from all inputs whose names in byFields
                 Kefir.combine(_.values streams).onValue deliverToCallback
